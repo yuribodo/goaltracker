@@ -3,7 +3,7 @@
 
 export default function Header() {
     return (
-        <div className="flex justify-between bg-green-300 h-[20vh] w-full shadow-lg ">
+        <div className="flex justify-between bg-green-300 h-[20vh] w-full shadow-2xl ">
             <div className="flex items-center">
                 <h1 className="px-4">Gerenciador de Metas</h1>
             </div>
