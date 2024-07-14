@@ -9,11 +9,11 @@ export default function Home() {
             <div className="flex justify-between">
                 <div className="flex space-x-2 py-6 px-6">
                     <div className="flex items-center justify-center cursor-pointer bg-yellow-200 rounded-xl h-[50px] w-[50px] shadow-lg">+</div>
-                    <div className="flex items-center">
+                    <div className="flex items-center h-[50px]">
                         <h1 className="">Nova Meta</h1>
                     </div>
                 </div>
-                <div className="w-[50vw]">
+                <div className="w-[50vw] mt-6 mr-6">
                     <Goals />
                     
                 </div>
