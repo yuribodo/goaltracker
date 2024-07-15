@@ -1,0 +1,35 @@
+[
+    {
+      "id": 1,
+      "title": "Meta 01",
+      "description": "Descrição da Meta 01",
+      "itemsCompleted": 3,
+      "itemsTotal": 5,
+      "completed": false
+    },
+    {
+      "id": 2,
+      "title": "Meta 02",
+      "description": "Descrição da Meta 02",
+      "itemsCompleted": 4,
+      "itemsTotal": 5,
+      "completed": false
+    },
+    {
+      "id": 3,
+      "title": "Meta 03",
+      "description": "Descrição da Meta 03",
+      "itemsCompleted": 2,
+      "itemsTotal": 5,
+      "completed": false
+    },
+    {
+      "id": 4,
+      "title": "Meta 04",
+      "description": "Descrição da Meta 04",
+      "itemsCompleted": 5,
+      "itemsTotal": 5,
+      "completed": true
+    }
+  ]
+  
