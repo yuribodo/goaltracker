@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
+import Modal from 'react-modal';
 
 interface Goal {
   id: number;
@@ -13,6 +14,9 @@ interface Goal {
 
 const Goals = () => {
   const [goals, setGoals] = useState<Goal[]>([]);
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [newGoalTitle, setNewGoalTitle] = useState('');
+  const [newGoalDescription, setNewGoalDescription] = useState('');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -32,35 +36,83 @@ const Goals = () => {
 
     const newGoal: Goal = {
       id: goals.length + 1,
-      title: `Meta 0${goals.length + 1}`,
-      description: `Descrição da Meta 0${goals.length + 1}`,
+      title: newGoalTitle,
+      description: newGoalDescription,
       itemsCompleted: 0,
       itemsTotal: 5,
       completed: false
     };
+
     setGoals([...goals, newGoal]);
+    closeModal();
+  };
+
+  const openModal = () => {
+    setModalIsOpen(true);
+  };
+
+  const closeModal = () => {
+    setModalIsOpen(false);
+    setNewGoalTitle('');
+    setNewGoalDescription('');
   };
 
   return (
     <div className="flex justify-between">
       <div className="flex justify-between">
-        <div className="flex  space-x-2 py-6 px-6">
-          <div onClick={addNewGoal} className="flex items-center justify-center cursor-pointer bg-yellow-200 rounded-xl h-[50px] w-[50px] shadow-lg">+</div>
-          <div className="flex items-center w-fit h-[50px]">
-            <h1 className="">Nova Meta</h1>
+        <div className="flex space-x-2 py-6 px-6">
+          <div onClick={openModal} className="flex items-center justify-center cursor-pointer bg-blue-500 rounded-full h-12 w-12 text-white text-3xl font-bold">+</div>
+          <div className="flex h-12  items-center">
+            <h1 className="text-xl font-bold">Nova Meta</h1>
           </div>
         </div>
       </div>
       <div className="grid grid-cols-2 gap-4 mr-20 py-6">
         {goals.map((goal) => (
-          <div key={goal.id} className="px-6 py-6 bg-red-500">
-            <h2 className="font-bold">{goal.title}</h2>
-            <h3>{goal.itemsCompleted}/{goal.itemsTotal} itens</h3>
-            <p>{goal.description}</p>
-            <p>{goal.completed ? 'Concluída' : 'Não Concluída'}</p>
+          <div key={goal.id} className="px-6 py-6 bg-gray-200 rounded-lg shadow-md">
+            <h2 className="font-bold text-lg">{goal.title}</h2>
+            <h3 className="text-sm">{goal.itemsCompleted}/{goal.itemsTotal} itens</h3>
+            <p className="text-sm">{goal.description}</p>
+            <p className="text-sm">{goal.completed ? 'Concluída' : 'Não Concluída'}</p>
           </div>
         ))}
       </div>
+
+      {/* Modal */}
+      <Modal
+        isOpen={modalIsOpen}
+        onRequestClose={closeModal}
+        contentLabel="Modal de Nova Meta"
+        className="modal"
+        overlayClassName="overlay"
+      >
+        <div className="fixed inset-0 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-8 max-w-sm w-full">
+            <h2 className="text-2xl font-bold mb-4">Nova Meta</h2>
+            <form onSubmit={addNewGoal} className="space-y-4">
+              <label className="block text-sm font-medium">Título:</label>
+              <input
+                type="text"
+                value={newGoalTitle}
+                onChange={(e) => setNewGoalTitle(e.target.value)}
+                className="border border-gray-300 rounded-lg p-2 w-full"
+                required
+              />
+              <label className="block text-sm font-medium">Descrição:</label>
+              <textarea
+                value={newGoalDescription}
+                onChange={(e) => setNewGoalDescription(e.target.value)}
+                className="border border-gray-300 rounded-lg p-2 w-full h-20 resize-none"
+                required
+              />
+              <div className="flex justify-end">
+                <button type="submit" className="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition-colors">Salvar Meta</button>
+                <button onClick={closeModal} className="ml-2 border border-gray-300 py-2 px-4 rounded-lg hover:bg-gray-200 transition-colors">Cancelar</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 }
