@@ -5,7 +5,19 @@
       "description": "Descrição da Meta 01",
       "itemsCompleted": 3,
       "itemsTotal": 5,
-      "completed": false
+      "completed": false,
+      "tasks": [
+        {
+          "id": 1,
+          "name": "Tarefa 01",
+          "status": "todo"
+        },
+        {
+          "id": 2,
+          "name": "Tarefa 02",
+          "status": "done"
+        }
+      ]
     },
     {
       "id": 2,
@@ -13,7 +25,8 @@
       "description": "Descrição da Meta 02",
       "itemsCompleted": 4,
       "itemsTotal": 5,
-      "completed": false
+      "completed": false,
+      "tasks": []
     },
     {
       "id": 3,
@@ -21,15 +34,14 @@
       "description": "Descrição da Meta 03",
       "itemsCompleted": 2,
       "itemsTotal": 5,
-      "completed": false
-    },
-    {
-      "id": 4,
-      "title": "Meta 04",
-      "description": "Descrição da Meta 04",
-      "itemsCompleted": 5,
-      "itemsTotal": 5,
-      "completed": true
+      "completed": false,
+      "tasks": [
+        {
+          "id": 1,
+          "name": "Tarefa 01",
+          "status": "todo"
+        }
+      ]
     }
   ]
   
