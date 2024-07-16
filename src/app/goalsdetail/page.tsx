@@ -5,20 +5,20 @@ import Modal from 'react-modal';
 import Link from 'next/link';
 
 interface Task {
-  id: number;
-  name: string;
-  status: 'done' | 'todo';
-}
-
-interface Goal {
-  id: number;
-  title: string;
-  description: string;
-  itemsCompleted: number;
-  itemsTotal: number;
-  completed: boolean;
-  tasks: Task[];
-}
+    id: number;
+    name: string;
+    status: 'done' | 'todo';
+  }
+  
+  interface Goal {
+    id: number;
+    title: string;
+    description: string;
+    itemsCompleted: number;
+    itemsTotal: number;
+    completed: boolean;
+    tasks: Task[];
+  }
 
 const Goals = () => {
   const [goals, setGoals] = useState<Goal[]>([]);
@@ -108,7 +108,7 @@ const Goals = () => {
               <p className="text-sm">{goal.completed ? 'Concluída' : 'Não Concluída'}</p>
               <h3 className="font-bold mt-2">Tarefas:</h3>
               <ul>
-                {goal.tasks.map((task) => (
+                {goal.tasks.map((task: any) => (
                   <li key={task.id} className="flex items-center">
                     <span className="mr-2">{task.name}</span>
                     <span className={`px-2 py-1 rounded ${task.status === 'done' ? 'bg-green-500 text-white' : 'bg-gray-300 text-black'}`}>{task.status}</span>
