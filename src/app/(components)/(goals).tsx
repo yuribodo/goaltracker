@@ -100,7 +100,7 @@ const Goals = () => {
       </div>
       <div className="grid grid-cols-2 gap-4 mr-20 py-6">
         {goals.map((goal) => (
-          <Link key={goal.id} href={`/goalsdetail/${goal.id}`}>
+          <Link key={goal.id} href={`/goalsdetail/`}>
             <div className="px-6 py-6 bg-gray-200 rounded-lg shadow-md">
               <h2 className="font-bold text-lg">{goal.title}</h2>
               <h3 className="text-sm">{goal.itemsCompleted}/{goal.itemsTotal} itens</h3>
