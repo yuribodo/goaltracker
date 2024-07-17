@@ -24,6 +24,7 @@ const Goals = () => {
   const [goals, setGoals] = useState<Goal[]>([]);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [goalModalIsOpen, setGoalModalIsOpen] = useState(false);
+  const [selectedGoal, setSelectedGoal] = useState<Goal | null>(null);
   const [newGoalTitle, setNewGoalTitle] = useState('');
   const [newGoalDescription, setNewGoalDescription] = useState('');
   const [newTaskName, setNewTaskName] = useState('');
@@ -38,7 +39,9 @@ const Goals = () => {
     fetchData();
   }, []);
 
-  const addNewGoal = () => {
+  const addNewGoal = (event: React.FormEvent) => {
+    event.preventDefault();
+
     if (goals.length >= 8) {
       alert('Limite máximo de 8 metas atingido.');
       return;
@@ -89,12 +92,14 @@ const Goals = () => {
     setNewTaskName('');
   };
 
-  const openModalGoal = () => {
+  const openModalGoal = (goal: Goal) => {
+    setSelectedGoal(goal);
     setGoalModalIsOpen(true);
   };
 
-  const closeModal1 = () => {
+  const closeModalGoal = () => {
     setGoalModalIsOpen(false);
+    setSelectedGoal(null);
   };
 
   return (
@@ -109,62 +114,60 @@ const Goals = () => {
       </div>
       <div className="grid grid-cols-2 gap-4 mr-20 py-6">
         {goals.map((goal) => (
-            <div onClick={openModalGoal} className="px-6 py-6 bg-gray-200 rounded-lg shadow-md ">
-              <h2 className="font-bold text-lg">{goal.title}</h2>
-              <h3 className="text-sm">{goal.itemsCompleted}/{goal.itemsTotal} itens</h3>
-              <p className="text-sm">{goal.description}</p>
-              <p className="text-sm">{goal.completed ? 'Concluída' : 'Não Concluída'}</p>
-              <h3 className="font-bold mt-2">Tarefas:</h3>
-              <ul>
-                {goal.tasks.map((task) => (
-                  <li key={task.id} className="flex items-center">
-                    <span className="mr-2">{task.name}</span>
-                    <span className={`px-2 py-1 rounded ${task.status === 'done' ? 'bg-green-500 text-white' : 'bg-gray-300 text-black'}`}>{task.status}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
+          <div key={goal.id} onClick={() => openModalGoal(goal)} className="px-6 py-6 bg-gray-200 rounded-lg shadow-md cursor-pointer">
+            <h2 className="font-bold text-lg">{goal.title}</h2>
+            <h3 className="text-sm">{goal.itemsCompleted}/{goal.itemsTotal} itens</h3>
+            <p className="text-sm">{goal.description}</p>
+            <p className="text-sm">{goal.completed ? 'Concluída' : 'Não Concluída'}</p>
+            <h3 className="font-bold mt-2">Tarefas:</h3>
+            <ul>
+              {goal.tasks.map((task) => (
+                <li key={task.id} className="flex items-center">
+                  <span className="mr-2">{task.name}</span>
+                  <span className={`px-2 py-1 rounded ${task.status === 'done' ? 'bg-green-500 text-white' : 'bg-gray-300 text-black'}`}>{task.status}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
         ))}
       </div>
 
       <Modal
         isOpen={goalModalIsOpen}
-        onRequestClose={closeModal1}
+        onRequestClose={closeModalGoal}
         contentLabel='Modal da Meta'
         className="modal"
         overlayClassName="overlay"
       >
-        <div className='fixed inset-0 flex items-center justify-center z-50 bg-gray-900 bg-opacity-50'>
-          <div className='bg-gray-300 rounded-lg p-8 max-w-xl w-full'>
-            <div className='flex justify-between'>
-              <h2 className='text-3xl font-bold mb-4'>GOal XXXX</h2>
-              <p onClick={closeModal1} className=' font-bold cursor-pointer'>X</p>
-            </div>
-            
-            <div className='flex'>
-              <h3 className='mr-1 font-semibold'>Tasks Completed:  </h3>
-              <p> 3/5 tasks</p>
-            </div>
-            <div className='flex flex-col mt-2'>
-              <h3 className='font-semibold'>Descricao</h3>
-              <p> Lorem ipsum dolor sit amet consectetur adipisicing elit. Optio esse, excepturi labore modi nulla similique beatae id, dolores laborum omnis odit vel repellendus pariatur error sed maiores. Voluptatem, quia explicabo?</p>
-            </div>
-            <div className='flex flex-col'>
-              <h3 className='mt-2 font-semibold'>Taks</h3>
-              <p className=' font-semibold mt-2'>Task 1</p>
-              <p className=''> Lorem ipsum dolor sit amet consectetur, adipisicing elit. Ducimus commodi laborum excepturi dolorem molestia.</p>
-              <div className='flex'>
-                <p className='font-semibold'>Status:</p>
-                <p> Done</p>
+        {selectedGoal && (
+          <div className='fixed inset-0 flex items-center justify-center z-50 bg-gray-900 bg-opacity-50'>
+            <div className='bg-gray-300 rounded-lg p-8 max-w-xl w-full'>
+              <div className='flex justify-between'>
+                <h2 className='text-3xl font-bold mb-4'>{selectedGoal.title}</h2>
+                <p onClick={closeModalGoal} className='font-bold cursor-pointer'>X</p>
               </div>
-              
+              <div className='flex'>
+                <h3 className='mr-1 font-semibold'>Tasks Completed:  </h3>
+                <p>{selectedGoal.itemsCompleted}/{selectedGoal.itemsTotal} tasks</p>
+              </div>
+              <div className='flex flex-col mt-2'>
+                <h3 className='font-semibold'>Descrição</h3>
+                <p>{selectedGoal.description}</p>
+              </div>
+              <div className='flex flex-col'>
+                <h3 className='mt-2 font-semibold'>Tarefas</h3>
+                {selectedGoal.tasks.map(task => (
+                  <div key={task.id} className='mt-2'>
+                    <p className='font-semibold'>{task.name}</p>
+                    <p>{task.status}</p>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
-        </div>
+        )}
       </Modal>
 
-      {/* Modal */}
-      
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
@@ -204,7 +207,7 @@ const Goals = () => {
               <div className="flex justify-end">
                 <button type="button" onClick={() => addTask(goals.length + 1)} className="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition-colors">Adicionar Tarefa</button>
                 <button type="submit" className="bg-green-500 text-white py-2 px-4 ml-2 rounded-lg hover:bg-green-600 transition-colors">Salvar Meta</button>
-                <button onClick={closeModal} className="ml-2 border border-gray-300 py-2 px-4 rounded-lg hover:bg-gray-200 transition-colors">Cancelar</button>
+                <button onClick={closeModal} type="button" className="ml-2 border border-gray-300 py-2 px-4 rounded-lg hover:bg-gray-200 transition-colors">Cancelar</button>
               </div>
             </form>
           </div>
