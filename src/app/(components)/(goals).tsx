@@ -23,6 +23,7 @@ interface Goal {
 const Goals = () => {
   const [goals, setGoals] = useState<Goal[]>([]);
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [goalModalIsOpen, setGoalModalIsOpen] = useState(false);
   const [newGoalTitle, setNewGoalTitle] = useState('');
   const [newGoalDescription, setNewGoalDescription] = useState('');
   const [newTaskName, setNewTaskName] = useState('');
@@ -88,6 +89,14 @@ const Goals = () => {
     setNewTaskName('');
   };
 
+  const openModalGoal = () => {
+    setGoalModalIsOpen(true);
+  };
+
+  const closeModal1 = () => {
+    setGoalModalIsOpen(false);
+  };
+
   return (
     <div className="flex justify-between">
       <div className="flex justify-between">
@@ -100,8 +109,7 @@ const Goals = () => {
       </div>
       <div className="grid grid-cols-2 gap-4 mr-20 py-6">
         {goals.map((goal) => (
-          <Link key={goal.id} href={`/goalsdetail/`}>
-            <div className="px-6 py-6 bg-gray-200 rounded-lg shadow-md">
+            <div onClick={openModalGoal} className="px-6 py-6 bg-gray-200 rounded-lg shadow-md ">
               <h2 className="font-bold text-lg">{goal.title}</h2>
               <h3 className="text-sm">{goal.itemsCompleted}/{goal.itemsTotal} itens</h3>
               <p className="text-sm">{goal.description}</p>
@@ -116,9 +124,44 @@ const Goals = () => {
                 ))}
               </ul>
             </div>
-          </Link>
         ))}
       </div>
+
+      <Modal
+        isOpen={goalModalIsOpen}
+        onRequestClose={closeModal1}
+        contentLabel='Modal da Meta'
+        className="modal"
+        overlayClassName="overlay"
+      >
+        <div className='fixed inset-0 flex items-center justify-center z-50 bg-gray-900 bg-opacity-50'>
+          <div className='bg-gray-300 rounded-lg p-8 max-w-xl w-full'>
+            <div className='flex justify-between'>
+              <h2 className='text-3xl font-bold mb-4'>GOal XXXX</h2>
+              <p onClick={closeModal1} className=' font-bold cursor-pointer'>X</p>
+            </div>
+            
+            <div className='flex'>
+              <h3 className='mr-1 font-semibold'>Tasks Completed:  </h3>
+              <p> 3/5 tasks</p>
+            </div>
+            <div className='flex flex-col mt-2'>
+              <h3 className='font-semibold'>Descricao</h3>
+              <p> Lorem ipsum dolor sit amet consectetur adipisicing elit. Optio esse, excepturi labore modi nulla similique beatae id, dolores laborum omnis odit vel repellendus pariatur error sed maiores. Voluptatem, quia explicabo?</p>
+            </div>
+            <div className='flex flex-col'>
+              <h3 className='mt-2 font-semibold'>Taks</h3>
+              <p className=' font-semibold mt-2'>Task 1</p>
+              <p className=''> Lorem ipsum dolor sit amet consectetur, adipisicing elit. Ducimus commodi laborum excepturi dolorem molestia.</p>
+              <div className='flex'>
+                <p className='font-semibold'>Status:</p>
+                <p> Done</p>
+              </div>
+              
+            </div>
+          </div>
+        </div>
+      </Modal>
 
       {/* Modal */}
       
