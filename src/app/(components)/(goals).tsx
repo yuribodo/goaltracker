@@ -117,7 +117,12 @@ const Goals = () => {
           <div key={goal.id} onClick={() => openModalGoal(goal)} className="px-6 py-6 bg-gray-200 rounded-lg shadow-md cursor-pointer">
             <h2 className="font-bold text-lg">{goal.title}</h2>
             <h3 className="text-sm">{goal.itemsCompleted}/{goal.itemsTotal} itens</h3>
-            <p className="text-sm">{goal.description}</p>
+            <div className="relative pt-1">
+              <div className="overflow-hidden h-2 text-xs flex rounded bg-blue-200">
+                <div style={{ width: `${(goal.itemsCompleted / goal.itemsTotal) * 100}%` }} className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-blue-500"></div>
+              </div>
+            </div>
+            <p className="text-sm mt-2">{goal.description}</p>
             <p className="text-sm">{goal.completed ? 'Concluída' : 'Não Concluída'}</p>
             <h3 className="font-bold mt-2">Tarefas:</h3>
             <ul>
