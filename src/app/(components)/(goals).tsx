@@ -141,27 +141,34 @@ const Goals = () => {
       >
         {selectedGoal && (
           <div className='fixed inset-0 flex items-center justify-center z-50 bg-gray-900 bg-opacity-50'>
-            <div className='bg-gray-300 rounded-lg p-8 max-w-xl w-full'>
+            <div className='bg-white rounded-lg p-8 max-w-xl w-full'>
               <div className='flex justify-between'>
                 <h2 className='text-3xl font-bold mb-4'>{selectedGoal.title}</h2>
-                <p onClick={closeModalGoal} className='font-bold cursor-pointer'>X</p>
+                <button onClick={closeModalGoal} className='text-red-500 font-bold cursor-pointer'>X</button>
               </div>
-              <div className='flex'>
-                <h3 className='mr-1 font-semibold'>Tasks Completed:  </h3>
-                <p>{selectedGoal.itemsCompleted}/{selectedGoal.itemsTotal} tasks</p>
-              </div>
-              <div className='flex flex-col mt-2'>
-                <h3 className='font-semibold'>Descrição</h3>
-                <p>{selectedGoal.description}</p>
-              </div>
-              <div className='flex flex-col'>
-                <h3 className='mt-2 font-semibold'>Tarefas</h3>
-                {selectedGoal.tasks.map(task => (
-                  <div key={task.id} className='mt-2'>
-                    <p className='font-semibold'>{task.name}</p>
-                    <p>{task.status}</p>
+              <div className='mb-4'>
+                <h3 className='text-lg font-semibold'>Progresso</h3>
+                <p className='text-sm'>{selectedGoal.itemsCompleted}/{selectedGoal.itemsTotal} tarefas concluídas</p>
+                <div className="relative pt-1">
+                  <div className="overflow-hidden h-2 text-xs flex rounded bg-blue-200">
+                    <div style={{ width: `${(selectedGoal.itemsCompleted / selectedGoal.itemsTotal) * 100}%` }} className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-blue-500"></div>
                   </div>
-                ))}
+                </div>
+              </div>
+              <div className='mb-4'>
+                <h3 className='text-lg font-semibold'>Descrição</h3>
+                <p className='text-sm'>{selectedGoal.description}</p>
+              </div>
+              <div className='mb-4'>
+                <h3 className='text-lg font-semibold'>Tarefas</h3>
+                <ul className='space-y-2'>
+                  {selectedGoal.tasks.map(task => (
+                    <li key={task.id} className='flex items-center justify-between bg-gray-100 p-2 rounded'>
+                      <span>{task.name}</span>
+                      <span className={`px-2 py-1 rounded ${task.status === 'done' ? 'bg-green-500 text-white' : 'bg-gray-300 text-black'}`}>{task.status}</span>
+                    </li>
+                  ))}
+                </ul>
               </div>
             </div>
           </div>
