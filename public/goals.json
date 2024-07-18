@@ -1,47 +1,152 @@
 [
-    {
-      "id": 1,
-      "title": "Meta 01",
-      "description": "Descrição da Meta 01",
-      "itemsCompleted": 3,
-      "itemsTotal": 5,
-      "completed": false,
-      "tasks": [
-        {
-          "id": 1,
-          "name": "Tarefa 01",
-          "status": "todo"
-        },
-        {
-          "id": 2,
-          "name": "Tarefa 02",
-          "status": "done"
-        }
-      ]
-    },
-    {
-      "id": 2,
-      "title": "Meta 02",
-      "description": "Descrição da Meta 02",
-      "itemsCompleted": 4,
-      "itemsTotal": 5,
-      "completed": false,
-      "tasks": []
-    },
-    {
-      "id": 3,
-      "title": "Meta 03",
-      "description": "Descrição da Meta 03",
-      "itemsCompleted": 2,
-      "itemsTotal": 5,
-      "completed": false,
-      "tasks": [
-        {
-          "id": 1,
-          "name": "Tarefa 01",
-          "status": "todo"
-        }
-      ]
-    }
-  ]
-  
+  {
+    "id": 1,
+    "title": "Meta 01",
+    "description": "Concluir o projeto de desenvolvimento web",
+    "itemsCompleted": 3,
+    "itemsTotal": 5,
+    "completed": false,
+    "tasks": [
+      {
+        "id": 1,
+        "name": "Criar layout da página inicial",
+        "status": "todo"
+      },
+      {
+        "id": 2,
+        "name": "Implementar sistema de login",
+        "status": "done"
+      },
+      {
+        "id": 3,
+        "name": "Configurar banco de dados",
+        "status": "todo"
+      },
+      {
+        "id": 4,
+        "name": "Testar responsividade",
+        "status": "todo"
+      },
+      {
+        "id": 5,
+        "name": "Realizar deploy",
+        "status": "todo"
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "title": "Meta 02",
+    "description": "Preparar a apresentação para a conferência",
+    "itemsCompleted": 2,
+    "itemsTotal": 3,
+    "completed": false,
+    "tasks": [
+      {
+        "id": 1,
+        "name": "Criar slides da apresentação",
+        "status": "done"
+      },
+      {
+        "id": 2,
+        "name": "Revisar conteúdo",
+        "status": "todo"
+      },
+      {
+        "id": 3,
+        "name": "Ensaiar apresentação",
+        "status": "todo"
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "title": "Meta 03",
+    "description": "Organizar a festa de aniversário",
+    "itemsCompleted": 1,
+    "itemsTotal": 4,
+    "completed": false,
+    "tasks": [
+      {
+        "id": 1,
+        "name": "Enviar convites",
+        "status": "done"
+      },
+      {
+        "id": 2,
+        "name": "Comprar decoração",
+        "status": "todo"
+      },
+      {
+        "id": 3,
+        "name": "Encomendar bolo",
+        "status": "todo"
+      },
+      {
+        "id": 4,
+        "name": "Confirmar buffet",
+        "status": "todo"
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "title": "Meta 04",
+    "description": "Finalizar relatório financeiro",
+    "itemsCompleted": 0,
+    "itemsTotal": 3,
+    "completed": false,
+    "tasks": [
+      {
+        "id": 1,
+        "name": "Compilar dados de receitas",
+        "status": "todo"
+      },
+      {
+        "id": 2,
+        "name": "Compilar dados de despesas",
+        "status": "todo"
+      },
+      {
+        "id": 3,
+        "name": "Gerar gráficos e análises",
+        "status": "todo"
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "title": "Meta 05",
+    "description": "Completar o curso de marketing digital",
+    "itemsCompleted": 2,
+    "itemsTotal": 5,
+    "completed": false,
+    "tasks": [
+      {
+        "id": 1,
+        "name": "Assistir aulas do módulo 1",
+        "status": "done"
+      },
+      {
+        "id": 2,
+        "name": "Fazer exercícios do módulo 1",
+        "status": "done"
+      },
+      {
+        "id": 3,
+        "name": "Assistir aulas do módulo 2",
+        "status": "todo"
+      },
+      {
+        "id": 4,
+        "name": "Fazer exercícios do módulo 2",
+        "status": "todo"
+      },
+      {
+        "id": 5,
+        "name": "Concluir projeto final",
+        "status": "todo"
+      }
+    ]
+  }
+]
