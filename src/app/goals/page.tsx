@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import { motion } from 'framer-motion';
 
 interface Task {
   id: number;
@@ -51,14 +52,25 @@ const GoalsList = () => {
       <div className="grid grid-cols-2 gap-4">
         {goalsState.length > 0 ? (
           goalsState.map(goal => (
-            <Link key={goal.id} href={`/goalsdetail/${goal.id}`}>
               <div className="p-4 bg-gray-200 rounded-lg shadow-md cursor-pointer">
                 <h2 className="font-bold text-lg">{goal.title}</h2>
                 <p className="text-sm">{goal.description}</p>
                 <p className="text-sm">{goal.itemsCompleted}/{goal.itemsTotal} itens</p>
                 <p className="text-sm">{goal.completed ? 'Concluída' : 'Não Concluída'}</p>
+                {goal.tasks.map(task => (
+                    <li
+                        key={task.id}
+                        className='flex items-center justify-between bg-gray-100 p-2 rounded'
+                    >
+                        <span>{task.name}</span>
+                        <button 
+                        className={`px-2 py-1 rounded ${task.status === 'done' ? 'bg-green-500 text-white' : 'bg-gray-300 text-black'}`}
+                        >
+                        {task.status}
+                        </button>
+                    </li>
+                ))}
               </div>
-            </Link>
           ))
         ) : (
           <p className="text-center text-gray-500">Nenhuma meta concluída encontrada.</p>
