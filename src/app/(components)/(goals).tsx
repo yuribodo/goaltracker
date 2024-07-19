@@ -7,7 +7,7 @@ import Link from 'next/link';
 interface Task {
   id: number;
   name: string;
-  status: 'done' | 'todo';
+  status: 'done' | 'todo' | string;
 }
 
 interface Goal {
@@ -97,6 +97,23 @@ const Goals = () => {
     setSelectedGoal(null);
   };
 
+  const toggleTaskStatus = (taskId: number) => {
+    if (!selectedGoal) return;
+
+    const updatedTasks = selectedGoal.tasks.map(task =>
+      task.id === taskId ? { ...task, status: task.status === 'done' ? 'todo' : 'done' } : task
+    );
+
+    const updatedGoal = {
+      ...selectedGoal,
+      tasks: updatedTasks,
+      itemsCompleted: updatedTasks.filter(task => task.status === 'done').length,
+    };
+
+    setSelectedGoal(updatedGoal);
+    setGoals(goals.map(goal => goal.id === updatedGoal.id ? updatedGoal : goal));
+  };
+
   return (
     <div className="flex justify-between">
       <div className="flex justify-between">
@@ -165,7 +182,12 @@ const Goals = () => {
                   {selectedGoal.tasks.map(task => (
                     <li key={task.id} className='flex items-center justify-between bg-gray-100 p-2 rounded'>
                       <span>{task.name}</span>
-                      <span className={`px-2 py-1 rounded ${task.status === 'done' ? 'bg-green-500 text-white' : 'bg-gray-300 text-black'}`}>{task.status}</span>
+                      <button 
+                        onClick={() => toggleTaskStatus(task.id)}
+                        className={`px-2 py-1 rounded ${task.status === 'done' ? 'bg-green-500 text-white' : 'bg-gray-300 text-black'}`}
+                      >
+                        {task.status}
+                      </button>
                     </li>
                   ))}
                 </ul>
