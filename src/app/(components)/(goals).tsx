@@ -248,7 +248,7 @@ const Goals = () => {
         overlayClassName="overlay"
       >
         <motion.div
-          className='bg-white rounded-lg p-8 max-w-md w-full'
+          className='bg-white   fixed inset-0 flex flex-col justify-center items-center rounded-lg p-8 max-w-md w-full mx-auto my-8'
           initial={{ scale: 0.8 }}
           animate={{ scale: 1 }}
           exit={{ scale: 0.8 }}
@@ -327,6 +327,7 @@ const Goals = () => {
           </form>
         </motion.div>
       </Modal>
+
     </div>
   );
 };
