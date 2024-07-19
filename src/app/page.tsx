@@ -4,12 +4,12 @@ import Goals from "./(components)/(goals)";
 
 export default function Home() {
     return (
-        <div className="min-h-screen">
+        <div className="min-h-screen flex flex-col">
             <Header />
             <Goals />
             <Link href="/goals">
-                <div className="flex ml-6 bg-green-600 w-fit cursor-pointer px-2 rounded-xl shadow-lg mt-[25vh]">
-                    <p className="p-2">Ver Metas Anteriores</p>
+                <div className="fixed bottom-4 ml-2  h-fit bg-green-600 w-fit cursor-pointer px-4 py-2 rounded-xl shadow-lg">
+                    <p className="text-white">Ver Metas Anteriores</p>
                 </div>
             </Link>
         </div>
