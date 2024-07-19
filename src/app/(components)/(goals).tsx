@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Modal from 'react-modal';
+import { motion } from 'framer-motion';
 import Link from 'next/link';
 
 interface Task {
@@ -118,7 +119,14 @@ const Goals = () => {
     <div className="flex justify-between">
       <div className="flex justify-between">
         <div className="flex space-x-2 py-6 px-6">
-          <div onClick={openModal} className="flex items-center justify-center cursor-pointer bg-blue-500 rounded-full h-12 w-12 text-white text-3xl font-bold">+</div>
+          <motion.div
+            onClick={openModal}
+            className="flex items-center justify-center cursor-pointer bg-blue-500 rounded-full h-12 w-12 text-white text-3xl font-bold"
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+          >
+            +
+          </motion.div>
           <div className="flex h-12 items-center">
             <h1 className="text-xl font-bold">Nova Meta</h1>
           </div>
@@ -126,12 +134,24 @@ const Goals = () => {
       </div>
       <div className="grid grid-cols-2 gap-4 mr-20 py-6">
         {goals.map((goal) => (
-          <div key={goal.id} onClick={() => openModalGoal(goal)} className="px-6 py-6 bg-gray-200 rounded-lg shadow-md cursor-pointer">
+          <motion.div
+            key={goal.id}
+            onClick={() => openModalGoal(goal)}
+            className="px-6 py-6 bg-gray-200 rounded-lg shadow-md cursor-pointer"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
             <h2 className="font-bold text-lg">{goal.title}</h2>
             <h3 className="text-sm">{goal.itemsCompleted}/{goal.itemsTotal} itens</h3>
             <div className="relative pt-1">
               <div className="overflow-hidden h-2 text-xs flex rounded bg-blue-200">
-                <div style={{ width: `${(goal.itemsCompleted / goal.itemsTotal) * 100}%` }} className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-blue-500"></div>
+                <motion.div
+                  style={{ width: `${(goal.itemsCompleted / goal.itemsTotal) * 100}%` }}
+                  className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-blue-500"
+                  initial={{ width: 0 }}
+                  animate={{ width: `${(goal.itemsCompleted / goal.itemsTotal) * 100}%` }}
+                  transition={{ duration: 0.5 }}
+                ></motion.div>
               </div>
             </div>
             <p className="text-sm mt-2">{goal.description}</p>
@@ -145,7 +165,7 @@ const Goals = () => {
                 </li>
               ))}
             </ul>
-          </div>
+          </motion.div>
         ))}
       </div>
 
@@ -157,8 +177,20 @@ const Goals = () => {
         overlayClassName="overlay"
       >
         {selectedGoal && (
-          <div className='fixed inset-0 flex items-center justify-center z-50 bg-gray-900 bg-opacity-50'>
-            <div className='bg-white rounded-lg p-8 max-w-xl w-full'>
+          <motion.div
+            className='fixed inset-0 flex items-center justify-center z-50 bg-gray-900 bg-opacity-50'
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            <motion.div
+              className='bg-white rounded-lg p-8 max-w-xl w-full'
+              initial={{ scale: 0.8 }}
+              animate={{ scale: 1 }}
+              exit={{ scale: 0.8 }}
+              transition={{ duration: 0.3 }}
+            >
               <div className='flex justify-between'>
                 <h2 className='text-3xl font-bold mb-4'>{selectedGoal.title}</h2>
                 <button onClick={closeModalGoal} className='text-red-500 font-bold cursor-pointer'>X</button>
@@ -168,7 +200,13 @@ const Goals = () => {
                 <p className='text-sm'>{selectedGoal.itemsCompleted}/{selectedGoal.itemsTotal} tarefas concluídas</p>
                 <div className="relative pt-1">
                   <div className="overflow-hidden h-2 text-xs flex rounded bg-blue-200">
-                    <div style={{ width: `${(selectedGoal.itemsCompleted / selectedGoal.itemsTotal) * 100}%` }} className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-blue-500"></div>
+                    <motion.div
+                      style={{ width: `${(selectedGoal.itemsCompleted / selectedGoal.itemsTotal) * 100}%` }}
+                      className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-blue-500"
+                      initial={{ width: 0 }}
+                      animate={{ width: `${(selectedGoal.itemsCompleted / selectedGoal.itemsTotal) * 100}%` }}
+                      transition={{ duration: 0.5 }}
+                    ></motion.div>
                   </div>
                 </div>
               </div>
@@ -180,7 +218,12 @@ const Goals = () => {
                 <h3 className='text-lg font-semibold'>Tarefas</h3>
                 <ul className='space-y-2'>
                   {selectedGoal.tasks.map(task => (
-                    <li key={task.id} className='flex items-center justify-between bg-gray-100 p-2 rounded'>
+                    <motion.li
+                      key={task.id}
+                      className='flex items-center justify-between bg-gray-100 p-2 rounded'
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                    >
                       <span>{task.name}</span>
                       <button 
                         onClick={() => toggleTaskStatus(task.id)}
@@ -188,69 +231,104 @@ const Goals = () => {
                       >
                         {task.status}
                       </button>
-                    </li>
+                    </motion.li>
                   ))}
                 </ul>
               </div>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
         )}
       </Modal>
 
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
-        contentLabel="Modal de Nova Meta"
+        contentLabel='Nova Meta'
         className="modal"
         overlayClassName="overlay"
       >
-        <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-900 bg-opacity-50">
-          <div className="bg-white rounded-lg p-8 max-w-sm w-full">
-            <h2 className="text-2xl font-bold mb-4">Nova Meta</h2>
-            <form onSubmit={addNewGoal} className="space-y-4">
-              <label className="block text-sm font-medium">Título:</label>
+        <motion.div
+          className='bg-white rounded-lg p-8 max-w-md w-full'
+          initial={{ scale: 0.8 }}
+          animate={{ scale: 1 }}
+          exit={{ scale: 0.8 }}
+          transition={{ duration: 0.3 }}
+        >
+          <h2 className='text-2xl font-bold mb-4'>Adicionar Nova Meta</h2>
+          <form onSubmit={addNewGoal}>
+            <div className='mb-4'>
+              <label className='block text-sm font-semibold mb-2' htmlFor='goal-title'>Título</label>
               <input
-                type="text"
+                id='goal-title'
+                type='text'
                 value={newGoalTitle}
                 onChange={(e) => setNewGoalTitle(e.target.value)}
-                className="border border-gray-300 rounded-lg p-2 w-full"
+                className='border border-gray-300 rounded-lg px-4 py-2 w-full'
                 required
               />
-              <label className="block text-sm font-medium">Descrição:</label>
+            </div>
+            <div className='mb-4'>
+              <label className='block text-sm font-semibold mb-2' htmlFor='goal-description'>Descrição</label>
               <textarea
+                id='goal-description'
                 value={newGoalDescription}
                 onChange={(e) => setNewGoalDescription(e.target.value)}
-                className="border border-gray-300 rounded-lg p-2 w-full h-20 resize-none"
+                className='border border-gray-300 rounded-lg px-4 py-2 w-full'
                 required
               />
-              <div className="mb-4">
-                <label className="block text-sm font-medium">Nova Tarefa:</label>
+            </div>
+            <div className='mb-4'>
+              <label className='block text-sm font-semibold mb-2'>Tarefas</label>
+              <div className='flex'>
                 <input
-                  type="text"
+                  type='text'
                   value={newTaskName}
                   onChange={(e) => setNewTaskName(e.target.value)}
-                  className="border border-gray-300 rounded-lg p-2 w-full"
+                  className='border border-gray-300 rounded-lg px-4 py-2 w-full'
+                  placeholder='Nome da Tarefa'
                 />
-                <button type="button" onClick={addTask} className="bg-blue-500 text-white py-2 px-4 mt-2 rounded-lg hover:bg-blue-600 transition-colors">Adicionar Tarefa</button>
+                <button
+                  type='button'
+                  onClick={addTask}
+                  className='ml-2 bg-blue-500 text-white rounded-lg px-4 py-2'
+                >
+                  Adicionar
+                </button>
               </div>
-              <div className="flex justify-end">
-                <button type="submit" className="bg-green-500 text-white py-2 px-4 rounded-lg hover:bg-green-600 transition-colors">Salvar Meta</button>
-                <button onClick={closeModal} type="button" className="ml-2 border border-gray-300 py-2 px-4 rounded-lg hover:bg-gray-200 transition-colors">Cancelar</button>
-              </div>
-            </form>
-            <ul className='mt-4'>
-              {newTasks.map(task => (
-                <li key={task.id} className='flex items-center justify-between bg-gray-100 p-2 rounded mt-2'>
-                  <span>{task.name}</span>
-                  <span className={`px-2 py-1 rounded ${task.status === 'done' ? 'bg-green-500 text-white' : 'bg-gray-300 text-black'}`}>{task.status}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
+              <ul className='mt-2'>
+                {newTasks.map(task => (
+                  <li key={task.id} className='flex justify-between items-center border-b py-2'>
+                    <span>{task.name}</span>
+                    <button
+                      onClick={() => setNewTasks(newTasks.filter(t => t.id !== task.id))}
+                      className='text-red-500'
+                    >
+                      X
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className='flex justify-end'>
+              <button
+                type='button'
+                onClick={closeModal}
+                className='bg-gray-300 text-black rounded-lg px-4 py-2 mr-2'
+              >
+                Cancelar
+              </button>
+              <button
+                type='submit'
+                className='bg-blue-500 text-white rounded-lg px-4 py-2'
+              >
+                Adicionar Meta
+              </button>
+            </div>
+          </form>
+        </motion.div>
       </Modal>
     </div>
   );
-}
+};
 
 export default Goals;
