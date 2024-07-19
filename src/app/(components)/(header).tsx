@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from 'react';
+import { motion } from 'framer-motion';
 
 interface Task {
   id: number;
@@ -51,21 +52,43 @@ export default function Header() {
   return (
     <div className="bg-gradient-to-r from-green-400 to-green-600 text-white h-[20vh] flex flex-col justify-between p-6 shadow-lg">
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold">Gerenciador de Metas</h1>
+        <motion.h1 
+          className="text-3xl font-bold" 
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          Gerenciador de Metas
+        </motion.h1>
       </div>
       <div className="flex justify-between space-x-4 text-center">
-        <div className="flex flex-col items-center">
+        <motion.div 
+          className="flex flex-col items-center"
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+        >
           <h2 className="text-lg font-semibold">Todas as Metas</h2>
           <div className="text-2xl font-bold">{stats.totalGoals}</div>
-        </div>
-        <div className="flex flex-col items-center">
+        </motion.div>
+        <motion.div 
+          className="flex flex-col items-center"
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5, delay: 0.4 }}
+        >
           <h2 className="text-lg font-semibold">Em Progresso</h2>
           <div className="text-2xl font-bold">{stats.inProgress}</div>
-        </div>
-        <div className="flex flex-col items-center">
+        </motion.div>
+        <motion.div 
+          className="flex flex-col items-center"
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5, delay: 0.6 }}
+        >
           <h2 className="text-lg font-semibold">Completas</h2>
           <div className="text-2xl font-bold">{stats.completed}</div>
-        </div>
+        </motion.div>
       </div>
     </div>
   );
