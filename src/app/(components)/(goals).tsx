@@ -28,12 +28,13 @@ const Goals = () => {
   const [newGoalTitle, setNewGoalTitle] = useState('');
   const [newGoalDescription, setNewGoalDescription] = useState('');
   const [newTaskName, setNewTaskName] = useState('');
+  const [newTasks, setNewTasks] = useState<Task[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
       const response = await fetch('/goals.json');
       const data = await response.json();
-      setGoals(data.map((goal: Goal) => ({ ...goal, tasks: goal.tasks || [] }))); // Inicializa as metas com ou sem tarefas
+      setGoals(data.map((goal: Goal) => ({ ...goal, tasks: goal.tasks || [] })));
     };
 
     fetchData();
@@ -52,32 +53,25 @@ const Goals = () => {
       title: newGoalTitle,
       description: newGoalDescription,
       itemsCompleted: 0,
-      itemsTotal: 5,
+      itemsTotal: newTasks.length,
       completed: false,
-      tasks: []
+      tasks: newTasks
     };
 
     setGoals([...goals, newGoal]);
     closeModal();
   };
 
-  const addTask = (goalId: number) => {
-    const updatedGoals = goals.map(goal => {
-      if (goal.id === goalId) {
-        const newTask: Task = {
-          id: goal.tasks.length + 1,
-          name: newTaskName,
-          status: 'todo'
-        };
-        return {
-          ...goal,
-          tasks: [...goal.tasks, newTask]
-        };
-      }
-      return goal;
-    });
+  const addTask = () => {
+    if (!newTaskName) return;
 
-    setGoals(updatedGoals);
+    const newTask: Task = {
+      id: newTasks.length + 1,
+      name: newTaskName,
+      status: 'todo'
+    };
+
+    setNewTasks([...newTasks, newTask]);
     setNewTaskName('');
   };
 
@@ -90,6 +84,7 @@ const Goals = () => {
     setNewGoalTitle('');
     setNewGoalDescription('');
     setNewTaskName('');
+    setNewTasks([]);
   };
 
   const openModalGoal = (goal: Goal) => {
@@ -213,15 +208,22 @@ const Goals = () => {
                   value={newTaskName}
                   onChange={(e) => setNewTaskName(e.target.value)}
                   className="border border-gray-300 rounded-lg p-2 w-full"
-                  required
                 />
+                <button type="button" onClick={addTask} className="bg-blue-500 text-white py-2 px-4 mt-2 rounded-lg hover:bg-blue-600 transition-colors">Adicionar Tarefa</button>
               </div>
               <div className="flex justify-end">
-                <button type="button" onClick={() => addTask(goals.length + 1)} className="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition-colors">Adicionar Tarefa</button>
-                <button type="submit" className="bg-green-500 text-white py-2 px-4 ml-2 rounded-lg hover:bg-green-600 transition-colors">Salvar Meta</button>
+                <button type="submit" className="bg-green-500 text-white py-2 px-4 rounded-lg hover:bg-green-600 transition-colors">Salvar Meta</button>
                 <button onClick={closeModal} type="button" className="ml-2 border border-gray-300 py-2 px-4 rounded-lg hover:bg-gray-200 transition-colors">Cancelar</button>
               </div>
             </form>
+            <ul className='mt-4'>
+              {newTasks.map(task => (
+                <li key={task.id} className='flex items-center justify-between bg-gray-100 p-2 rounded mt-2'>
+                  <span>{task.name}</span>
+                  <span className={`px-2 py-1 rounded ${task.status === 'done' ? 'bg-green-500 text-white' : 'bg-gray-300 text-black'}`}>{task.status}</span>
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
       </Modal>
