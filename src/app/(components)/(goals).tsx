@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import Modal from 'react-modal';
-import Link from 'next/link';
 
 interface Task {
   id: number;
@@ -33,7 +32,7 @@ const Goals = () => {
     const fetchData = async () => {
       const response = await fetch('/goals.json');
       const data = await response.json();
-      setGoals(data.map((goal: Goal) => ({ ...goal, tasks: goal.tasks || [] }))); // Inicializa as metas com ou sem tarefas
+      setGoals(data.map((goal: Goal) => ({ ...goal, tasks: goal.tasks || [] }))); 
     };
 
     fetchData();
