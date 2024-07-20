@@ -172,162 +172,92 @@ const Goals = () => {
       <Modal
         isOpen={goalModalIsOpen}
         onRequestClose={closeModalGoal}
-        contentLabel='Modal da Meta'
-        className="modal"
-        overlayClassName="overlay"
+        contentLabel="Goal Modal"
+        className="max-w-lg w-full mx-auto mt-20 bg-white rounded p-8 outline-none"
+        overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center"
       >
         {selectedGoal && (
-          <motion.div
-            className='fixed inset-0 flex items-center justify-center z-50 bg-gray-900 bg-opacity-50'
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
-          >
-            <motion.div
-              className='bg-white rounded-lg p-8 max-w-xl w-full'
-              initial={{ scale: 0.8 }}
-              animate={{ scale: 1 }}
-              exit={{ scale: 0.8 }}
-              transition={{ duration: 0.3 }}
-            >
-              <div className='flex justify-between'>
-                <h2 className='text-3xl font-bold mb-4'>{selectedGoal.title}</h2>
-                <button onClick={closeModalGoal} className='text-red-500 font-bold cursor-pointer'>X</button>
-              </div>
-              <div className='mb-4'>
-                <h3 className='text-lg font-semibold'>Progresso</h3>
-                <p className='text-sm'>{selectedGoal.itemsCompleted}/{selectedGoal.itemsTotal} tarefas concluídas</p>
-                <div className="relative pt-1">
-                  <div className="overflow-hidden h-2 text-xs flex rounded bg-blue-200">
-                    <motion.div
-                      style={{ width: `${(selectedGoal.itemsCompleted / selectedGoal.itemsTotal) * 100}%` }}
-                      className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-blue-500"
-                      initial={{ width: 0 }}
-                      animate={{ width: `${(selectedGoal.itemsCompleted / selectedGoal.itemsTotal) * 100}%` }}
-                      transition={{ duration: 0.5 }}
-                    ></motion.div>
-                  </div>
-                </div>
-              </div>
-              <div className='mb-4'>
-                <h3 className='text-lg font-semibold'>Descrição</h3>
-                <p className='text-sm'>{selectedGoal.description}</p>
-              </div>
-              <div className='mb-4'>
-                <h3 className='text-lg font-semibold'>Tarefas</h3>
-                <ul className='space-y-2'>
-                  {selectedGoal.tasks.map(task => (
-                    <motion.li
-                      key={task.id}
-                      className='flex items-center justify-between bg-gray-100 p-2 rounded'
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                    >
-                      <span>{task.name}</span>
-                      <button 
-                        onClick={() => toggleTaskStatus(task.id)}
-                        className={`px-2 py-1 rounded ${task.status === 'done' ? 'bg-green-500 text-white' : 'bg-gray-300 text-black'}`}
-                      >
-                        {task.status}
-                      </button>
-                    </motion.li>
-                  ))}
-                </ul>
-              </div>
-            </motion.div>
-          </motion.div>
+          <>
+            <h2 className="text-xl font-bold mb-4">{selectedGoal.title}</h2>
+            <h3 className="text-sm mb-2">Descrição: {selectedGoal.description}</h3>
+            <h3 className="text-sm mb-2">Progresso: {selectedGoal.itemsCompleted}/{selectedGoal.itemsTotal}</h3>
+            <ul className='space-y-2'>
+              {selectedGoal.tasks.map(task => (
+                <motion.li
+                  key={task.id}
+                  className='flex items-center justify-between bg-gray-100 p-2 rounded'
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <span>{task.name}</span>
+                  <button 
+                    onClick={() => toggleTaskStatus(task.id)}
+                    className={`px-2 py-1 rounded ${task.status === 'done' ? 'bg-green-500 text-white' : 'bg-gray-300 text-black'}`}
+                  >
+                    {task.status}
+                  </button>
+                </motion.li>
+              ))}
+            </ul>
+            <button onClick={closeModalGoal} className="mt-4 bg-blue-500 text-white py-2 px-4 rounded">Fechar</button>
+          </>
         )}
       </Modal>
 
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
-        contentLabel='Nova Meta'
-        className="modal"
-        overlayClassName="overlay"
+        contentLabel="Add Goal Modal"
+        className="max-w-lg w-full mx-auto mt-20 bg-white rounded p-8 outline-none"
+        overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center"
       >
-        <motion.div
-          className='bg-white   fixed inset-0 flex flex-col justify-center items-center rounded-lg p-8 max-w-md w-full mx-auto my-8'
-          initial={{ scale: 0.8 }}
-          animate={{ scale: 1 }}
-          exit={{ scale: 0.8 }}
-          transition={{ duration: 0.3 }}
-        >
-          <h2 className='text-2xl font-bold mb-4'>Adicionar Nova Meta</h2>
-          <form onSubmit={addNewGoal}>
-            <div className='mb-4'>
-              <label className='block text-sm font-semibold mb-2' htmlFor='goal-title'>Título</label>
-              <input
-                id='goal-title'
-                type='text'
-                value={newGoalTitle}
-                onChange={(e) => setNewGoalTitle(e.target.value)}
-                className='border border-gray-300 rounded-lg px-4 py-2 w-full'
-                required
-              />
-            </div>
-            <div className='mb-4'>
-              <label className='block text-sm font-semibold mb-2' htmlFor='goal-description'>Descrição</label>
-              <textarea
-                id='goal-description'
-                value={newGoalDescription}
-                onChange={(e) => setNewGoalDescription(e.target.value)}
-                className='border border-gray-300 rounded-lg px-4 py-2 w-full'
-                required
-              />
-            </div>
-            <div className='mb-4'>
-              <label className='block text-sm font-semibold mb-2'>Tarefas</label>
-              <div className='flex'>
-                <input
-                  type='text'
-                  value={newTaskName}
-                  onChange={(e) => setNewTaskName(e.target.value)}
-                  className='border border-gray-300 rounded-lg px-4 py-2 w-full'
-                  placeholder='Nome da Tarefa'
-                />
+        <h2 className="text-xl font-bold mb-4">Adicionar Nova Meta</h2>
+        <form onSubmit={addNewGoal}>
+          <input
+            type="text"
+            placeholder="Título da Meta"
+            value={newGoalTitle}
+            onChange={(e) => setNewGoalTitle(e.target.value)}
+            className="w-full mb-4 p-2 border border-gray-300 rounded"
+            required
+          />
+          <textarea
+            placeholder="Descrição da Meta"
+            value={newGoalDescription}
+            onChange={(e) => setNewGoalDescription(e.target.value)}
+            className="w-full mb-4 p-2 border border-gray-300 rounded"
+            required
+          ></textarea>
+          <h3 className="font-bold mb-2">Adicionar Tarefas</h3>
+          <div className='flex'>
+            <input
+              type="text"
+              placeholder="Nome da Tarefa"
+              value={newTaskName}
+              onChange={(e) => setNewTaskName(e.target.value)}
+              className="w-full mb-4 p-2 border border-gray-300 rounded mr-2"
+            />
+            <button type="button" onClick={addTask} className="bg-blue-500 text-white py-2 px-4 rounded">Adicionar</button>
+          </div>
+          <ul className='mt-2'>
+            {newTasks.map(task => (
+              <li key={task.id} className='flex justify-between items-center border-b py-2'>
+                <span>{task.name}</span>
                 <button
-                  type='button'
-                  onClick={addTask}
-                  className='ml-2 bg-blue-500 text-white rounded-lg px-4 py-2'
+                  onClick={() => setNewTasks(newTasks.filter(t => t.id !== task.id))}
+                  className='text-red-500'
                 >
-                  Adicionar
+                  X
                 </button>
-              </div>
-              <ul className='mt-2'>
-                {newTasks.map(task => (
-                  <li key={task.id} className='flex justify-between items-center border-b py-2'>
-                    <span>{task.name}</span>
-                    <button
-                      onClick={() => setNewTasks(newTasks.filter(t => t.id !== task.id))}
-                      className='text-red-500'
-                    >
-                      X
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div className='flex justify-end'>
-              <button
-                type='button'
-                onClick={closeModal}
-                className='bg-gray-300 text-black rounded-lg px-4 py-2 mr-2'
-              >
-                Cancelar
-              </button>
-              <button
-                type='submit'
-                className='bg-blue-500 text-white rounded-lg px-4 py-2'
-              >
-                Adicionar Meta
-              </button>
-            </div>
-          </form>
-        </motion.div>
+              </li>
+            ))}
+          </ul>
+          <div className="flex justify-end mt-4">
+            <button type="button" onClick={closeModal} className="mr-4 bg-gray-500 text-white py-2 px-4 rounded">Cancelar</button>
+            <button type="submit" className="bg-blue-500 text-white py-2 px-4 rounded">Adicionar Meta</button>
+          </div>
+        </form>
       </Modal>
-
     </div>
   );
 };
