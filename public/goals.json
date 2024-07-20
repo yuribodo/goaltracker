@@ -38,9 +38,9 @@
     "id": 2,
     "title": "Meta 02",
     "description": "Preparar a apresentação para a conferência",
-    "itemsCompleted": 2,
+    "itemsCompleted": 3,
     "itemsTotal": 3,
-    "completed": false,
+    "completed": true,
     "tasks": [
       {
         "id": 1,
@@ -50,12 +50,12 @@
       {
         "id": 2,
         "name": "Revisar conteúdo",
-        "status": "todo"
+        "status": "done"
       },
       {
         "id": 3,
         "name": "Ensaiar apresentação",
-        "status": "todo"
+        "status": "done"
       }
     ]
   },
