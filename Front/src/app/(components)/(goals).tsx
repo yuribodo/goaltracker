@@ -133,9 +133,9 @@ const Goals = () => {
         </div>
       </div>
       <div className="grid grid-cols-2 gap-4 mr-20 py-6">
-      {goals.map((goal) => (
+        {goals.map((goal) => (
           <motion.div
-            key={goal.id}  // Adicione a prop key aqui
+            key={goal.id} // Adicione a prop key aqui
             onClick={() => openModalGoal(goal)}
             className="px-6 py-6 bg-gray-200 rounded-lg shadow-md cursor-pointer"
             whileHover={{ scale: 1.05 }}
@@ -167,38 +167,37 @@ const Goals = () => {
             </ul>
           </motion.div>
         ))}
-
       </div>
 
       <Modal
         isOpen={goalModalIsOpen}
         onRequestClose={closeModalGoal}
-        contentLabel='Modal da Meta'
+        contentLabel="Modal da Meta"
         className="modal"
         overlayClassName="overlay"
       >
         {selectedGoal && (
           <motion.div
-            className='fixed inset-0 flex items-center justify-center z-50 bg-gray-900 bg-opacity-50'
+            className="fixed inset-0 flex items-center justify-center z-50 bg-gray-900 bg-opacity-50"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
           >
             <motion.div
-              className='bg-white rounded-lg p-8 max-w-xl w-full'
+              className="bg-white rounded-lg p-8 max-w-xl w-full"
               initial={{ scale: 0.8 }}
               animate={{ scale: 1 }}
               exit={{ scale: 0.8 }}
               transition={{ duration: 0.3 }}
             >
-              <div className='flex justify-between'>
-                <h2 className='text-3xl font-bold mb-4'>{selectedGoal.title}</h2>
-                <button onClick={closeModalGoal} className='text-red-500 font-bold cursor-pointer'>X</button>
+              <div className="flex justify-between">
+                <h2 className="text-3xl font-bold mb-4">{selectedGoal.title}</h2>
+                <button onClick={closeModalGoal} className="text-red-500 font-bold cursor-pointer">X</button>
               </div>
-              <div className='mb-4'>
-                <h3 className='text-lg font-semibold'>Progresso</h3>
-                <p className='text-sm'>{selectedGoal.itemsCompleted}/{selectedGoal.itemsTotal} tarefas concluídas</p>
+              <div className="mb-4">
+                <h3 className="text-lg font-semibold">Progresso</h3>
+                <p className="text-sm">{selectedGoal.itemsCompleted}/{selectedGoal.itemsTotal} tarefas concluídas</p>
                 <div className="relative pt-1">
                   <div className="overflow-hidden h-2 text-xs flex rounded bg-blue-200">
                     <motion.div
@@ -211,22 +210,22 @@ const Goals = () => {
                   </div>
                 </div>
               </div>
-              <div className='mb-4'>
-                <h3 className='text-lg font-semibold'>Descrição</h3>
-                <p className='text-sm'>{selectedGoal.description}</p>
+              <div className="mb-4">
+                <h3 className="text-lg font-semibold">Descrição</h3>
+                <p className="text-sm">{selectedGoal.description}</p>
               </div>
-              <div className='mb-4'>
-                <h3 className='text-lg font-semibold'>Tarefas</h3>
-                <ul className='space-y-2'>
-                {selectedGoal.tasks.map(task => (
+              <div className="mb-4">
+                <h3 className="text-lg font-semibold">Tarefas</h3>
+                <ul className="space-y-2">
+                  {selectedGoal.tasks.map(task => (
                     <motion.li
-                      key={task.id}  // Adicione a prop key aqui
-                      className='flex items-center justify-between bg-gray-100 p-2 rounded'
+                      key={task.id} // Adicione a prop key aqui
+                      className="flex items-center justify-between bg-gray-100 p-2 rounded"
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                     >
                       <span>{task.name}</span>
-                      <button 
+                      <button
                         onClick={() => toggleTaskStatus(task.id)}
                         className={`px-2 py-1 rounded ${task.status === 'done' ? 'bg-green-500 text-white' : 'bg-gray-300 text-black'}`}
                       >
@@ -244,91 +243,100 @@ const Goals = () => {
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
-        contentLabel='Nova Meta'
+        contentLabel='Modal de Nova Meta'
         className="modal"
         overlayClassName="overlay"
       >
         <motion.div
-          className='bg-white   fixed inset-0 flex flex-col justify-center items-center rounded-lg p-8 max-w-md w-full mx-auto my-8'
-          initial={{ scale: 0.8 }}
-          animate={{ scale: 1 }} 
-          exit={{ scale: 0.8 }}
+          className='fixed inset-0 flex items-center justify-center z-50 bg-gray-900 bg-opacity-50'
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
           transition={{ duration: 0.3 }}
         >
-          <h2 className='text-2xl font-bold mb-4'>Adicionar Nova Meta</h2>
-          <form onSubmit={addNewGoal}>
-            <div className='mb-4'>
-              <label className='block text-sm font-semibold mb-2' htmlFor='goal-title'>Título</label>
-              <input
-                id='goal-title'
-                type='text'
-                value={newGoalTitle}
-                onChange={(e) => setNewGoalTitle(e.target.value)}
-                className='border border-gray-300 rounded-lg px-4 py-2 w-full'
-                required
-              />
+          <motion.div
+            className='bg-white rounded-lg p-8 max-w-xl w-full'
+            initial={{ scale: 0.8 }}
+            animate={{ scale: 1 }}
+            exit={{ scale: 0.8 }}
+            transition={{ duration: 0.3 }}
+          >
+            <div className='flex justify-between'>
+              <h2 className='text-3xl font-bold mb-4'>Adicionar Nova Meta</h2>
+              <button onClick={closeModal} className='text-red-500 font-bold cursor-pointer'>X</button>
             </div>
-            <div className='mb-4'>
-              <label className='block text-sm font-semibold mb-2' htmlFor='goal-description'>Descrição</label>
-              <textarea
-                id='goal-description'
-                value={newGoalDescription}
-                onChange={(e) => setNewGoalDescription(e.target.value)}
-                className='border border-gray-300 rounded-lg px-4 py-2 w-full'
-                required
-              />
-            </div>
-            <div className='mb-4'>
-              <label className='block text-sm font-semibold mb-2'>Tarefas</label>
-              <div className='flex'>
+            <form onSubmit={addNewGoal}>
+              <div className='mb-4'>
+                <label className='block text-gray-700 text-sm font-bold mb-2' htmlFor='goalTitle'>
+                  Título da Meta
+                </label>
                 <input
+                  id='goalTitle'
                   type='text'
-                  value={newTaskName}
-                  onChange={(e) => setNewTaskName(e.target.value)}
-                  className='border border-gray-300 rounded-lg px-4 py-2 w-full'
-                  placeholder='Nome da Tarefa'
+                  className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'
+                  value={newGoalTitle}
+                  onChange={(e) => setNewGoalTitle(e.target.value)}
+                  required
                 />
+              </div>
+              <div className='mb-4'>
+                <label className='block text-gray-700 text-sm font-bold mb-2' htmlFor='goalDescription'>
+                  Descrição
+                </label>
+                <textarea
+                  id='goalDescription'
+                  className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'
+                  value={newGoalDescription}
+                  onChange={(e) => setNewGoalDescription(e.target.value)}
+                  required
+                ></textarea>
+              </div>
+              <div className='mb-4'>
+                <label className='block text-gray-700 text-sm font-bold mb-2' htmlFor='taskName'>
+                  Adicionar Tarefas
+                </label>
+                <div className='flex mb-2'>
+                  <input
+                    id='taskName'
+                    type='text'
+                    className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'
+                    value={newTaskName}
+                    onChange={(e) => setNewTaskName(e.target.value)}
+                  />
+                  <button
+                    type='button'
+                    onClick={addTask}
+                    className='ml-2 bg-blue-500 text-white rounded px-4 py-2'
+                  >
+                    Add
+                  </button>
+                </div>
+                <ul>
+                  {newTasks.map(task => (
+                    <li key={task.id} className='flex justify-between items-center border-b py-2'>
+                      <span>{task.name}</span>
+                      <button
+                        onClick={() => setNewTasks(newTasks.filter(t => t.id !== task.id))}
+                        className='text-red-500'
+                      >
+                        X
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div className='flex justify-end'>
                 <button
-                  type='button'
-                  onClick={addTask}
-                  className='ml-2 bg-blue-500 text-white rounded-lg px-4 py-2'
+                  type='submit'
+                  className='bg-blue-500 text-white rounded px-4 py-2'
                 >
-                  Adicionar
+                  Adicionar Meta
                 </button>
               </div>
-              <ul className='mt-2'>
-              {newTasks.map(task => (
-                <li key={task.id} className='flex justify-between items-center border-b py-2'>
-                  <span>{task.name}</span>
-                  <button
-                    onClick={() => setNewTasks(newTasks.filter(t => t.id !== task.id))}
-                    className='text-red-500'
-                  >
-                    X
-                  </button>
-                </li>
-              ))}
-              </ul>
-            </div>
-            <div className='flex justify-end'>
-              <button
-                type='button'
-                onClick={closeModal}
-                className='bg-gray-300 text-black rounded-lg px-4 py-2 mr-2'
-              >
-                Cancelar
-              </button>
-              <button
-                type='submit'
-                className='bg-blue-500 text-white rounded-lg px-4 py-2'
-              >
-                Adicionar Meta
-              </button>
-            </div>
-          </form>
+            </form>
+          </motion.div>
         </motion.div>
       </Modal>
-
     </div>
   );
 };
