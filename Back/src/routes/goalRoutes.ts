@@ -10,4 +10,4 @@ goalRouter.post('/', createGoal);
 goalRouter.put('/:id', updateGoal);
 goalRouter.delete('/:id', deleteGoal);
 
-module.exports = goalRouter;
+export default goalRouter;
