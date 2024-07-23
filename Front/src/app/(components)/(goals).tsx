@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import Modal from 'react-modal';
 import { motion } from 'framer-motion';
-import Link from 'next/link';
 import axios from 'axios';
 
 interface Task {
@@ -31,6 +30,15 @@ const Goals = () => {
   const [newGoalDescription, setNewGoalDescription] = useState('');
   const [newTaskName, setNewTaskName] = useState('');
   const [newTasks, setNewTasks] = useState<Task[]>([]);
+
+  const refreshGoals = async () => {
+    try {
+      const response = await axios.get('http://localhost:8080/goals');
+      setGoals(response.data.map((goal: Goal) => ({ ...goal, tasks: goal.tasks || [] })));
+    } catch (error) {
+      console.error("Error fetching goals:", error);
+    }
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -110,9 +118,43 @@ const Goals = () => {
 
   const toggleTaskStatus = async (taskId: number) => {
     if (!selectedGoal) return;
-
+  
+    // Atualiza a tarefa localmente
     const updatedTasks = selectedGoal.tasks.map(task =>
       task.id === taskId ? { ...task, status: task.status === 'done' ? 'todo' : 'done' } : task
+    );
+  
+    // Atualiza a meta localmente
+    const updatedGoal = {
+      ...selectedGoal,
+      tasks: updatedTasks,
+      itemsCompleted: updatedTasks.filter(task => task.status === 'done').length,
+    };
+  
+    // Atualiza o estado local
+    setSelectedGoal(updatedGoal);
+    setGoals(prevGoals => 
+      prevGoals.map(goal => 
+        goal.id === updatedGoal.id ? updatedGoal : goal
+      )
+    );
+  
+    try {
+      // Atualiza a meta no backend
+      await axios.put(`http://localhost:8080/goals/${updatedGoal.id}`, updatedGoal);
+      // Atualiza a lista de metas
+      await refreshGoals(); 
+    } catch (error) {
+      console.error("Error updating task status:", error);
+    }
+  };
+  
+
+  const handleTaskUpdate = async (updatedTask: Task) => {
+    if (!selectedGoal) return;
+
+    const updatedTasks = selectedGoal.tasks.map(task =>
+      task.id === updatedTask.id ? updatedTask : task
     );
 
     const updatedGoal = {
@@ -127,7 +169,7 @@ const Goals = () => {
     try {
       await axios.put(`http://localhost:8080/goals/${updatedGoal.id}`, updatedGoal);
     } catch (error) {
-      console.error("Error updating task status:", error);
+      console.error("Error updating task:", error);
     }
   };
 
