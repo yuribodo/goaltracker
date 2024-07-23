@@ -24,9 +24,14 @@ model Goal {
 model Task {
   id       Int    @id @default(autoincrement())
   name     String
-  status   String
+  status   TaskStatus
   goalId   Int
   goal     Goal   @relation("GoalTasks", fields: [goalId], references: [id])
 
   @@index([goalId], name: "goalId_idx")
+}
+
+enum TaskStatus {
+  todo
+  done
 }
