@@ -56,6 +56,11 @@ export const createTask = async (req: Request, res: Response) => {
 export const updateTask = async (req: Request, res: Response) => {
   const { id } = req.params;
   const { name, status } = req.body;
+  const validStatuses = ["todo", "done"];
+  if (status && !validStatuses.includes(status)) {
+    return res.status(400).json({ error: "Invalid task status. Allowed values are 'todo' and 'done'." });
+  }
+
   try {
     const task = await prisma.task.update({
       where: { id: Number(id) },
