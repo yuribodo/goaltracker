@@ -56,6 +56,7 @@ export const createTask = async (req: Request, res: Response) => {
 export const updateTask = async (req: Request, res: Response) => {
   const { id } = req.params;
   const { name, status } = req.body;
+
   const validStatuses = ["todo", "done"];
   if (status && !validStatuses.includes(status)) {
     return res.status(400).json({ error: "Invalid task status. Allowed values are 'todo' and 'done'." });
@@ -68,6 +69,7 @@ export const updateTask = async (req: Request, res: Response) => {
     });
     res.json(task);
   } catch (error) {
+    console.error("Error updating task:", error);
     if (error instanceof Error) {
       res.status(500).json({ error: error.message });
     } else {

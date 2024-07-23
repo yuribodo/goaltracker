@@ -67,20 +67,28 @@ export const updateGoal = async (req: Request, res: Response) => {
   const { id } = req.params;
   const { title, description, completed, tasks } = req.body;
 
-  if (tasks) {
-    const validStatuses = ["todo", "done"];
-    if (tasks.some((task: any) => !validStatuses.includes(task.status))) {
-      return res.status(400).json({ error: "Invalid task status. Allowed values are 'todo' and 'done'." });
-    }
+  const validStatuses = ["todo", "done"];
+  if (tasks && tasks.some((task: any) => !validStatuses.includes(task.status))) {
+    return res.status(400).json({ error: "Invalid task status. Allowed values are 'todo' and 'done'." });
   }
 
   try {
+    // Optionally handle task updates or deletions here
     const goal = await prisma.goal.update({
       where: { id: Number(id) },
-      data: { title, description, completed, tasks: tasks ? { create: tasks } : undefined }
+      data: {
+        title,
+        description,
+        completed,
+        tasks: tasks ? {
+          create: tasks.filter((task: any) => !task.id), // Create only new tasks
+          update: tasks.filter((task: any) => task.id), // Update existing tasks
+        } : undefined
+      }
     });
     res.json(goal);
   } catch (error) {
+    console.error("Error updating goal:", error);
     if (error instanceof Error) {
       res.status(500).json({ error: error.message });
     } else {
@@ -88,6 +96,7 @@ export const updateGoal = async (req: Request, res: Response) => {
     }
   }
 };
+
 
 export const deleteGoal = async (req: Request, res: Response) => {
   const { id } = req.params;
