@@ -1,5 +1,6 @@
-const { PrismaClient } = require('@prisma/client');
+import { PrismaClient } from '@prisma/client';
 import { Request, Response } from 'express';
+
 const prisma = new PrismaClient();
 
 export const getGoals = async (req: Request, res: Response) => {
@@ -24,6 +25,9 @@ export const getGoalById = async (req: Request, res: Response) => {
       where: { id: Number(id) },
       include: { tasks: true }
     });
+    if (!goal) {
+      return res.status(404).json({ error: 'Goal not found' });
+    }
     res.json(goal);
   } catch (error) {
     if (error instanceof Error) {
@@ -36,7 +40,7 @@ export const getGoalById = async (req: Request, res: Response) => {
 
 export const createGoal = async (req: Request, res: Response) => {
   const { title, description, completed, tasks } = req.body;
-  
+
   const validStatuses = ["todo", "done"];
   if (tasks.some((task: any) => !validStatuses.includes(task.status))) {
     return res.status(400).json({ error: "Invalid task status. Allowed values are 'todo' and 'done'." });
@@ -73,17 +77,23 @@ export const updateGoal = async (req: Request, res: Response) => {
   }
 
   try {
-    // Optionally handle task updates or deletions here
     const goal = await prisma.goal.update({
       where: { id: Number(id) },
       data: {
         title,
         description,
         completed,
-        tasks: tasks ? {
-          create: tasks.filter((task: any) => !task.id), // Create only new tasks
-          update: tasks.filter((task: any) => task.id), // Update existing tasks
-        } : undefined
+        tasks: {
+          // Separate new tasks from tasks to update
+          create: tasks ? tasks.filter((task: any) => !task.id) : [], // Create new tasks
+          update: tasks ? tasks.filter((task: any) => task.id).map((task: any) => ({
+            where: { id: task.id }, // Identificador da tarefa para atualizar
+            data: {
+              name: task.name,
+              status: task.status
+            }
+          })) : [], // Update existing tasks
+        }
       }
     });
     res.json(goal);
@@ -96,7 +106,6 @@ export const updateGoal = async (req: Request, res: Response) => {
     }
   }
 };
-
 
 export const deleteGoal = async (req: Request, res: Response) => {
   const { id } = req.params;
