@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Modal from 'react-modal';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
+import axios from 'axios';
 
 interface Task {
   id: number;
@@ -33,15 +34,19 @@ const Goals = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await fetch('/goals.json');
-      const data = await response.json();
-      setGoals(data.map((goal: Goal) => ({ ...goal, tasks: goal.tasks || [] })));
+      try {
+        const response = await axios.get('http://localhost:8080/goals');
+        const data = response.data;
+        setGoals(data.map((goal: Goal) => ({ ...goal, tasks: goal.tasks || [] })));
+      } catch (error) {
+        console.error("Error fetching goals:", error);
+      }
     };
 
     fetchData();
   }, []);
 
-  const addNewGoal = (event: React.FormEvent) => {
+  const addNewGoal = async (event: React.FormEvent) => {
     event.preventDefault();
 
     if (goals.length >= 8) {
@@ -59,8 +64,13 @@ const Goals = () => {
       tasks: newTasks
     };
 
-    setGoals([...goals, newGoal]);
-    closeModal();
+    try {
+      const response = await axios.post('http://localhost:8080/goals', newGoal);
+      setGoals([...goals, response.data]);
+      closeModal();
+    } catch (error) {
+      console.error("Error adding new goal:", error);
+    }
   };
 
   const addTask = () => {
@@ -98,7 +108,7 @@ const Goals = () => {
     setSelectedGoal(null);
   };
 
-  const toggleTaskStatus = (taskId: number) => {
+  const toggleTaskStatus = async (taskId: number) => {
     if (!selectedGoal) return;
 
     const updatedTasks = selectedGoal.tasks.map(task =>
@@ -113,6 +123,12 @@ const Goals = () => {
 
     setSelectedGoal(updatedGoal);
     setGoals(goals.map(goal => goal.id === updatedGoal.id ? updatedGoal : goal));
+
+    try {
+      await axios.put(`http://localhost:8080/goals/${updatedGoal.id}`, updatedGoal);
+    } catch (error) {
+      console.error("Error updating task status:", error);
+    }
   };
 
   return (
@@ -216,22 +232,21 @@ const Goals = () => {
               </div>
               <div className="mb-4">
                 <h3 className="text-lg font-semibold">Tarefas</h3>
-                <ul className="space-y-2">
-                  {selectedGoal.tasks.map(task => (
-                    <motion.li
-                      key={task.id} // Adicione a prop key aqui
-                      className="flex items-center justify-between bg-gray-100 p-2 rounded"
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                    >
-                      <span>{task.name}</span>
+                <ul className="list-disc list-inside">
+                  {selectedGoal.tasks.map((task) => (
+                    <li key={task.id} className="flex items-center mb-2">
+                      <span className="flex-grow">{task.name}</span>
                       <button
                         onClick={() => toggleTaskStatus(task.id)}
-                        className={`px-2 py-1 rounded ${task.status === 'done' ? 'bg-green-500 text-white' : 'bg-gray-300 text-black'}`}
+                        className={`px-2 py-1 rounded ${
+                          task.status === 'done'
+                            ? 'bg-green-500 text-white'
+                            : 'bg-gray-300 text-black'
+                        }`}
                       >
-                        {task.status}
+                        {task.status === 'done' ? 'Concluída' : 'Não Concluída'}
                       </button>
-                    </motion.li>
+                    </li>
                   ))}
                 </ul>
               </div>
@@ -243,94 +258,88 @@ const Goals = () => {
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
-        contentLabel='Modal de Nova Meta'
+        contentLabel="Nova Meta"
         className="modal"
         overlayClassName="overlay"
       >
         <motion.div
-          className='fixed inset-0 flex items-center justify-center z-50 bg-gray-900 bg-opacity-50'
+          className="fixed inset-0 flex items-center justify-center z-50 bg-gray-900 bg-opacity-50"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.3 }}
         >
           <motion.div
-            className='bg-white rounded-lg p-8 max-w-xl w-full'
+            className="bg-white rounded-lg p-8 max-w-xl w-full"
             initial={{ scale: 0.8 }}
             animate={{ scale: 1 }}
             exit={{ scale: 0.8 }}
             transition={{ duration: 0.3 }}
           >
-            <div className='flex justify-between'>
-              <h2 className='text-3xl font-bold mb-4'>Adicionar Nova Meta</h2>
-              <button onClick={closeModal} className='text-red-500 font-bold cursor-pointer'>X</button>
-            </div>
+            <h2 className="text-3xl font-bold mb-4">Adicionar Nova Meta</h2>
             <form onSubmit={addNewGoal}>
-              <div className='mb-4'>
-                <label className='block text-gray-700 text-sm font-bold mb-2' htmlFor='goalTitle'>
+              <div className="mb-4">
+                <label htmlFor="goalTitle" className="block text-sm font-semibold">
                   Título da Meta
                 </label>
                 <input
-                  id='goalTitle'
-                  type='text'
-                  className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'
+                  type="text"
+                  id="goalTitle"
                   value={newGoalTitle}
                   onChange={(e) => setNewGoalTitle(e.target.value)}
+                  className="mt-1 p-2 w-full border border-gray-300 rounded"
                   required
                 />
               </div>
-              <div className='mb-4'>
-                <label className='block text-gray-700 text-sm font-bold mb-2' htmlFor='goalDescription'>
-                  Descrição
+              <div className="mb-4">
+                <label htmlFor="goalDescription" className="block text-sm font-semibold">
+                  Descrição da Meta
                 </label>
                 <textarea
-                  id='goalDescription'
-                  className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'
+                  id="goalDescription"
                   value={newGoalDescription}
                   onChange={(e) => setNewGoalDescription(e.target.value)}
+                  className="mt-1 p-2 w-full border border-gray-300 rounded"
                   required
                 ></textarea>
               </div>
-              <div className='mb-4'>
-                <label className='block text-gray-700 text-sm font-bold mb-2' htmlFor='taskName'>
-                  Adicionar Tarefas
-                </label>
-                <div className='flex mb-2'>
+              <div className="mb-4">
+                <h3 className="text-lg font-semibold">Tarefas</h3>
+                <div className="flex items-center mb-2">
                   <input
-                    id='taskName'
-                    type='text'
-                    className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'
+                    type="text"
                     value={newTaskName}
                     onChange={(e) => setNewTaskName(e.target.value)}
+                    className="mt-1 p-2 w-full border border-gray-300 rounded"
+                    placeholder="Nome da Tarefa"
                   />
                   <button
-                    type='button'
+                    type="button"
                     onClick={addTask}
-                    className='ml-2 bg-blue-500 text-white rounded px-4 py-2'
+                    className="ml-2 px-4 py-2 bg-blue-500 text-white rounded"
                   >
-                    Add
+                    Adicionar
                   </button>
                 </div>
-                <ul>
-                  {newTasks.map(task => (
-                    <li key={task.id} className='flex justify-between items-center border-b py-2'>
-                      <span>{task.name}</span>
-                      <button
-                        onClick={() => setNewTasks(newTasks.filter(t => t.id !== task.id))}
-                        className='text-red-500'
-                      >
-                        X
-                      </button>
-                    </li>
+                <ul className="list-disc list-inside">
+                  {newTasks.map((task, index) => (
+                    <li key={index}>{task.name}</li>
                   ))}
                 </ul>
               </div>
-              <div className='flex justify-end'>
+              <div className="flex justify-end">
                 <button
-                  type='submit'
-                  className='bg-blue-500 text-white rounded px-4 py-2'
+                  type="button"
+                  onClick={closeModal}
+                  className="mr-4 px-4 py-2 bg-gray-300 rounded"
                 >
-                  Adicionar Meta
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 bg-blue-500 text-white rounded"
+                >
+                  Salvar Meta
                 </button>
               </div>
             </form>
