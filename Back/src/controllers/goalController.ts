@@ -36,6 +36,12 @@ export const getGoalById = async (req: Request, res: Response) => {
 
 export const createGoal = async (req: Request, res: Response) => {
   const { title, description, completed, tasks } = req.body;
+  
+  const validStatuses = ["todo", "done"];
+  if (tasks.some((task: any) => !validStatuses.includes(task.status))) {
+    return res.status(400).json({ error: "Invalid task status. Allowed values are 'todo' and 'done'." });
+  }
+
   try {
     const goal = await prisma.goal.create({
       data: {
