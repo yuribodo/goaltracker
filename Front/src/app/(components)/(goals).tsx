@@ -118,37 +118,36 @@ const Goals = () => {
 
   const toggleTaskStatus = async (taskId: number) => {
     if (!selectedGoal) return;
-  
+
     // Atualiza a tarefa localmente
     const updatedTasks = selectedGoal.tasks.map(task =>
       task.id === taskId ? { ...task, status: task.status === 'done' ? 'todo' : 'done' } : task
     );
-  
+
     // Atualiza a meta localmente
     const updatedGoal = {
       ...selectedGoal,
       tasks: updatedTasks,
       itemsCompleted: updatedTasks.filter(task => task.status === 'done').length,
     };
-  
+
     // Atualiza o estado local
     setSelectedGoal(updatedGoal);
-    setGoals(prevGoals => 
-      prevGoals.map(goal => 
+    setGoals(prevGoals =>
+      prevGoals.map(goal =>
         goal.id === updatedGoal.id ? updatedGoal : goal
       )
     );
-  
+
     try {
       // Atualiza a meta no backend
       await axios.put(`http://localhost:8080/goals/${updatedGoal.id}`, updatedGoal);
       // Atualiza a lista de metas
-      await refreshGoals(); 
+      await refreshGoals();
     } catch (error) {
       console.error("Error updating task status:", error);
     }
   };
-  
 
   const handleTaskUpdate = async (updatedTask: Task) => {
     if (!selectedGoal) return;
@@ -191,40 +190,42 @@ const Goals = () => {
         </div>
       </div>
       <div className="grid grid-cols-2 gap-4 mr-20 py-6">
-        {goals.map((goal) => (
-          <motion.div
-            key={goal.id} // Adicione a prop key aqui
-            onClick={() => openModalGoal(goal)}
-            className="px-6 py-6 bg-gray-200 rounded-lg shadow-md cursor-pointer"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            <h2 className="font-bold text-lg">{goal.title}</h2>
-            <h3 className="text-sm">{goal.itemsCompleted}/{goal.itemsTotal} itens</h3>
-            <div className="relative pt-1">
-              <div className="overflow-hidden h-2 text-xs flex rounded bg-blue-200">
-                <motion.div
-                  style={{ width: `${(goal.itemsCompleted / goal.itemsTotal) * 100}%` }}
-                  className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-blue-500"
-                  initial={{ width: 0 }}
-                  animate={{ width: `${(goal.itemsCompleted / goal.itemsTotal) * 100}%` }}
-                  transition={{ duration: 0.5 }}
-                ></motion.div>
+        {goals
+          .filter(goal => !goal.completed) // Filtra para mostrar apenas metas não completadas
+          .map((goal) => (
+            <motion.div
+              key={goal.id}
+              onClick={() => openModalGoal(goal)}
+              className="px-6 py-6 bg-gray-200 rounded-lg shadow-md cursor-pointer"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <h2 className="font-bold text-lg">{goal.title}</h2>
+              <h3 className="text-sm">{goal.itemsCompleted}/{goal.itemsTotal} itens</h3>
+              <div className="relative pt-1">
+                <div className="overflow-hidden h-2 text-xs flex rounded bg-blue-200">
+                  <motion.div
+                    style={{ width: `${(goal.itemsCompleted / goal.itemsTotal) * 100}%` }}
+                    className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-blue-500"
+                    initial={{ width: 0 }}
+                    animate={{ width: `${(goal.itemsCompleted / goal.itemsTotal) * 100}%` }}
+                    transition={{ duration: 0.5 }}
+                  ></motion.div>
+                </div>
               </div>
-            </div>
-            <p className="text-sm mt-2">{goal.description}</p>
-            <p className="text-sm">{goal.completed ? 'Concluída' : 'Não Concluída'}</p>
-            <h3 className="font-bold mt-2">Tarefas:</h3>
-            <ul>
-              {goal.tasks.map((task) => (
-                <li key={task.id} className="flex items-center">
-                  <span className="mr-2">{task.name}</span>
-                  <span className={`px-2 py-1 rounded ${task.status === 'done' ? 'bg-green-500 text-white' : 'bg-gray-300 text-black'}`}>{task.status}</span>
-                </li>
-              ))}
-            </ul>
-          </motion.div>
-        ))}
+              <p className="text-sm mt-2">{goal.description}</p>
+              <p className="text-sm">{goal.completed ? 'Concluída' : 'Não Concluída'}</p>
+              <h3 className="font-bold mt-2">Tarefas:</h3>
+              <ul>
+                {goal.tasks.map((task) => (
+                  <li key={task.id} className="flex items-center">
+                    <span className="mr-2">{task.name}</span>
+                    <span className={`px-2 py-1 rounded ${task.status === 'done' ? 'bg-green-500 text-white' : 'bg-gray-300 text-black'}`}>{task.status}</span>
+                  </li>
+                ))}
+              </ul>
+            </motion.div>
+          ))}
       </div>
 
       <Modal
@@ -250,48 +251,46 @@ const Goals = () => {
               transition={{ duration: 0.3 }}
             >
               <div className="flex justify-between">
-                <h2 className="text-3xl font-bold mb-4">{selectedGoal.title}</h2>
-                <button onClick={closeModalGoal} className="text-red-500 font-bold cursor-pointer">X</button>
+                <h2 className="text-3xl font-bold">{selectedGoal.title}</h2>
+                <button onClick={closeModalGoal} className="text-red-500 text-2xl">×</button>
               </div>
-              <div className="mb-4">
-                <h3 className="text-lg font-semibold">Progresso</h3>
-                <p className="text-sm">{selectedGoal.itemsCompleted}/{selectedGoal.itemsTotal} tarefas concluídas</p>
-                <div className="relative pt-1">
-                  <div className="overflow-hidden h-2 text-xs flex rounded bg-blue-200">
-                    <motion.div
-                      style={{ width: `${(selectedGoal.itemsCompleted / selectedGoal.itemsTotal) * 100}%` }}
-                      className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-blue-500"
-                      initial={{ width: 0 }}
-                      animate={{ width: `${(selectedGoal.itemsCompleted / selectedGoal.itemsTotal) * 100}%` }}
-                      transition={{ duration: 0.5 }}
-                    ></motion.div>
-                  </div>
+              <p className="text-lg mt-2">{selectedGoal.description}</p>
+              <p className="text-sm mt-2">{selectedGoal.itemsCompleted}/{selectedGoal.itemsTotal} itens</p>
+              <div className="relative pt-1">
+                <div className="overflow-hidden h-2 text-xs flex rounded bg-blue-200">
+                  <motion.div
+                    style={{ width: `${(selectedGoal.itemsCompleted / selectedGoal.itemsTotal) * 100}%` }}
+                    className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-blue-500"
+                    initial={{ width: 0 }}
+                    animate={{ width: `${(selectedGoal.itemsCompleted / selectedGoal.itemsTotal) * 100}%` }}
+                    transition={{ duration: 0.5 }}
+                  ></motion.div>
                 </div>
               </div>
-              <div className="mb-4">
-                <h3 className="text-lg font-semibold">Descrição</h3>
-                <p className="text-sm">{selectedGoal.description}</p>
-              </div>
-              <div className="mb-4">
-                <h3 className="text-lg font-semibold">Tarefas</h3>
-                <ul className="list-disc list-inside">
-                  {selectedGoal.tasks.map((task) => (
-                    <li key={task.id} className="flex items-center mb-2">
-                      <span className="flex-grow">{task.name}</span>
-                      <button
-                        onClick={() => toggleTaskStatus(task.id)}
-                        className={`px-2 py-1 rounded ${
-                          task.status === 'done'
-                            ? 'bg-green-500 text-white'
-                            : 'bg-gray-300 text-black'
-                        }`}
-                      >
-                        {task.status === 'done' ? 'Concluída' : 'Não Concluída'}
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+              <h3 className="font-bold mt-4">Tarefas:</h3>
+              <ul>
+                {selectedGoal.tasks.map((task) => (
+                  <li key={task.id} className="flex items-center">
+                    <input
+                      type="checkbox"
+                      checked={task.status === 'done'}
+                      onChange={() => toggleTaskStatus(task.id)}
+                      className="mr-2"
+                    />
+                    <span>{task.name}</span>
+                  </li>
+                ))}
+              </ul>
+              <form onSubmit={addTask} className="mt-4">
+                <input
+                  type="text"
+                  value={newTaskName}
+                  onChange={(e) => setNewTaskName(e.target.value)}
+                  placeholder="Nova tarefa"
+                  className="border p-2 rounded w-full"
+                />
+                <button type="submit" className="bg-blue-500 text-white p-2 rounded mt-2">Adicionar Tarefa</button>
+              </form>
             </motion.div>
           </motion.div>
         )}
@@ -318,73 +317,57 @@ const Goals = () => {
             exit={{ scale: 0.8 }}
             transition={{ duration: 0.3 }}
           >
-            <h2 className="text-3xl font-bold mb-4">Adicionar Nova Meta</h2>
-            <form onSubmit={addNewGoal}>
+            <h2 className="text-2xl font-bold">Adicionar Nova Meta</h2>
+            <form onSubmit={addNewGoal} className="mt-4">
               <div className="mb-4">
-                <label htmlFor="goalTitle" className="block text-sm font-semibold">
-                  Título da Meta
-                </label>
+                <label className="block text-sm font-medium">Título</label>
                 <input
                   type="text"
-                  id="goalTitle"
                   value={newGoalTitle}
                   onChange={(e) => setNewGoalTitle(e.target.value)}
-                  className="mt-1 p-2 w-full border border-gray-300 rounded"
+                  placeholder="Título da meta"
+                  className="border p-2 rounded w-full"
                   required
                 />
               </div>
               <div className="mb-4">
-                <label htmlFor="goalDescription" className="block text-sm font-semibold">
-                  Descrição da Meta
-                </label>
+                <label className="block text-sm font-medium">Descrição</label>
                 <textarea
-                  id="goalDescription"
                   value={newGoalDescription}
                   onChange={(e) => setNewGoalDescription(e.target.value)}
-                  className="mt-1 p-2 w-full border border-gray-300 rounded"
+                  placeholder="Descrição da meta"
+                  className="border p-2 rounded w-full"
                   required
-                ></textarea>
+                />
               </div>
               <div className="mb-4">
-                <h3 className="text-lg font-semibold">Tarefas</h3>
-                <div className="flex items-center mb-2">
-                  <input
-                    type="text"
-                    value={newTaskName}
-                    onChange={(e) => setNewTaskName(e.target.value)}
-                    className="mt-1 p-2 w-full border border-gray-300 rounded"
-                    placeholder="Nome da Tarefa"
-                  />
-                  <button
-                    type="button"
-                    onClick={addTask}
-                    className="ml-2 px-4 py-2 bg-blue-500 text-white rounded"
-                  >
-                    Adicionar
-                  </button>
-                </div>
-                <ul className="list-disc list-inside">
-                  {newTasks.map((task, index) => (
-                    <li key={index}>{task.name}</li>
+                <label className="block text-sm font-medium">Tarefas</label>
+                <input
+                  type="text"
+                  value={newTaskName}
+                  onChange={(e) => setNewTaskName(e.target.value)}
+                  placeholder="Nome da nova tarefa"
+                  className="border p-2 rounded w-full"
+                />
+                <button type="button" onClick={addTask} className="bg-blue-500 text-white p-2 rounded mt-2">Adicionar Tarefa</button>
+                <ul className="mt-2">
+                  {newTasks.map(task => (
+                    <li key={task.id} className="flex justify-between items-center border-b py-2">
+                      <span>{task.name}</span>
+                      <button
+                        type="button"
+                        onClick={() => setNewTasks(newTasks.filter(t => t.id !== task.id))}
+                        className="text-red-500"
+                      >
+                        Remover
+                      </button>
+                    </li>
                   ))}
                 </ul>
               </div>
-              <div className="flex justify-end">
-                <button
-                  type="button"
-                  onClick={closeModal}
-                  className="mr-4 px-4 py-2 bg-gray-300 rounded"
-                >
-                  Cancelar
-                </button>
-                <button
-                  type="submit"
-                  className="px-4 py-2 bg-blue-500 text-white rounded"
-                >
-                  Salvar Meta
-                </button>
-              </div>
+              <button type="submit" className="bg-blue-500 text-white p-2 rounded">Adicionar Meta</button>
             </form>
+            <button onClick={closeModal} className="mt-4 text-red-500">Cancelar</button>
           </motion.div>
         </motion.div>
       </Modal>
