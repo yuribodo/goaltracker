@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
+import axios from 'axios';
 
 interface Task {
   id: number;
@@ -28,8 +29,8 @@ export default function Header() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('/goals.json');
-        const goals: Goal[] = await response.json();
+        const response = await axios.get('http://localhost:8080/goals'); // URL da API
+        const goals: Goal[] = response.data;
 
         // Calculate statistics
         const totalGoals = goals.length;
