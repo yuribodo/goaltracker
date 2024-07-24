@@ -239,64 +239,64 @@ const Goals = () => {
         overlayClassName="overlay"
       >
         {selectedGoal && (
-          <motion.div
-            className="fixed inset-0 flex items-center justify-center z-50 bg-gray-900 bg-opacity-50"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
-          >
             <motion.div
-              className="bg-white rounded-lg p-8 max-w-xl w-full"
-              initial={{ scale: 0.8 }}
-              animate={{ scale: 1 }}
-              exit={{ scale: 0.8 }}
+              className="fixed inset-0 flex items-center justify-center z-50 bg-gray-900 bg-opacity-50"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
               transition={{ duration: 0.3 }}
             >
-              <div className="flex justify-between">
-                <h2 className="text-3xl font-bold">{selectedGoal.title}</h2>
-                <button onClick={closeModalGoal} className="text-red-500 text-2xl">×</button>
-              </div>
-              <p className="text-lg mt-2">{selectedGoal.description}</p>
-              <p className="text-sm mt-2">{selectedGoal.itemsCompleted}/{selectedGoal.itemsTotal} itens</p>
-              <div className="relative pt-1">
-                <div className="overflow-hidden h-2 text-xs flex rounded bg-blue-200">
-                  <motion.div
-                    style={{ width: `${(selectedGoal.itemsCompleted / selectedGoal.itemsTotal) * 100}%` }}
-                    className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-blue-500"
-                    initial={{ width: 0 }}
-                    animate={{ width: `${(selectedGoal.itemsCompleted / selectedGoal.itemsTotal) * 100}%` }}
-                    transition={{ duration: 0.5 }}
-                  ></motion.div>
+              <motion.div
+                className="bg-white rounded-lg p-8 max-w-xl w-full"
+                initial={{ scale: 0.8 }}
+                animate={{ scale: 1 }}
+                exit={{ scale: 0.8 }}
+                transition={{ duration: 0.3 }}
+              >
+                <div className="flex justify-between">
+                  <h2 className="text-3xl font-bold">{selectedGoal.title}</h2>
+                  <button onClick={closeModalGoal} className="text-red-500 text-2xl">×</button>
                 </div>
-              </div>
-              <h3 className="font-bold mt-4">Tarefas:</h3>
-              <ul>
-                {selectedGoal.tasks.map((task) => (
-                  <li key={task.id} className="flex items-center">
-                    <input
-                      type="checkbox"
-                      checked={task.status === 'done'}
-                      onChange={() => toggleTaskStatus(task.id)}
-                      className="mr-2"
-                    />
-                    <span>{task.name}</span>
-                  </li>
-                ))}
-              </ul>
-              <form onSubmit={addTask} className="mt-4">
-                <input
-                  type="text"
-                  value={newTaskName}
-                  onChange={(e) => setNewTaskName(e.target.value)}
-                  placeholder="Nova tarefa"
-                  className="border p-2 rounded w-full"
-                />
-                <button type="submit" className="bg-blue-500 text-white p-2 rounded mt-2">Adicionar Tarefa</button>
-              </form>
+                <p className="text-lg mt-2">{selectedGoal.description}</p>
+                <p className="text-sm mt-2">{selectedGoal.itemsCompleted}/{selectedGoal.itemsTotal} itens</p>
+                <div className="relative pt-1">
+                  <div className="overflow-hidden h-2 text-xs flex rounded bg-blue-200">
+                    <motion.div
+                      style={{ width: `${(selectedGoal.itemsCompleted / selectedGoal.itemsTotal) * 100}%` }}
+                      className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-blue-500"
+                      initial={{ width: 0 }}
+                      animate={{ width: `${(selectedGoal.itemsCompleted / selectedGoal.itemsTotal) * 100}%` }}
+                      transition={{ duration: 0.5 }}
+                    ></motion.div>
+                  </div>
+                </div>
+                <h3 className="font-bold mt-4">Tarefas:</h3>
+                <ul>
+                  {selectedGoal.tasks.map((task) => (
+                    <li key={task.id} className={`flex items-center ${task.status === 'done' ? 'line-through text-gray-500' : ''}`}>
+                      <input
+                        type="checkbox"
+                        checked={task.status === 'done'}
+                        onChange={() => toggleTaskStatus(task.id)}
+                        className="mr-2"
+                      />
+                      <span>{task.name}</span>
+                    </li>
+                  ))}
+                </ul>
+                <form onSubmit={addTask} className="mt-4">
+                  <input
+                    type="text"
+                    value={newTaskName}
+                    onChange={(e) => setNewTaskName(e.target.value)}
+                    placeholder="Nova tarefa"
+                    className="border p-2 rounded w-full"
+                  />
+                  <button type="submit" className="bg-blue-500 text-white p-2 rounded mt-2">Adicionar Tarefa</button>
+                </form>
+              </motion.div>
             </motion.div>
-          </motion.div>
-        )}
+          )}
       </Modal>
 
       <Modal
