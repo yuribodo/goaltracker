@@ -196,7 +196,7 @@ const Goals = () => {
             <motion.div
               key={goal.id}
               onClick={() => openModalGoal(goal)}
-              className="px-6 py-6 bg-gray-200 rounded-lg shadow-md cursor-pointer"
+              className="px-8 py-6 bg-white rounded-lg shadow-lg cursor-pointer hover:shadow-xl transition-shadow duration-300 ease-in-out"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
@@ -206,7 +206,7 @@ const Goals = () => {
                 <div className="overflow-hidden h-2 text-xs flex rounded bg-blue-200">
                   <motion.div
                     style={{ width: `${(goal.itemsCompleted / goal.itemsTotal) * 100}%` }}
-                    className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-blue-500"
+                    className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-gradient-to-r from-blue-500 to-blue-600"
                     initial={{ width: 0 }}
                     animate={{ width: `${(goal.itemsCompleted / goal.itemsTotal) * 100}%` }}
                     transition={{ duration: 0.5 }}
@@ -220,7 +220,9 @@ const Goals = () => {
                 {goal.tasks.map((task) => (
                   <li key={task.id} className="flex items-center">
                     <span className="mr-2">{task.name}</span>
-                    <span className={`px-2 py-1 rounded ${task.status === 'done' ? 'bg-green-500 text-white' : 'bg-gray-300 text-black'}`}>{task.status}</span>
+                    <span className={`px-3 py-1 rounded-full text-xs font-semibold ${task.status === 'done' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'}`}>
+                      {task.status}
+                    </span>
                   </li>
                 ))}
               </ul>
