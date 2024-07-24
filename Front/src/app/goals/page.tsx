@@ -3,6 +3,8 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { motion } from 'framer-motion';
+import { AiOutlineCheck, AiOutlineClose } from 'react-icons/ai';
+import { BsFillBarChartFill } from 'react-icons/bs';
 
 interface Task {
   id: number;
@@ -47,31 +49,40 @@ const GoalsList = () => {
   }
 
   return (
-    <div className="container mx-auto py-8">
-      <h1 className="text-3xl font-bold mb-4">Metas Concluídas</h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div className="container mx-auto py-8 px-4">
+      <h1 className="text-4xl font-extrabold mb-6 text-center text-gray-800">Metas Concluídas</h1>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {goalsState.length > 0 ? (
           goalsState.map(goal => (
             <motion.div 
               key={goal.id}
-              className="p-4 bg-gray-200 rounded-lg shadow-md"
+              className="p-6 bg-white rounded-lg shadow-lg border border-gray-200 hover:shadow-xl transition-shadow duration-300 ease-in-out"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
             >
-              <h2 className="font-bold text-lg">{goal.title}</h2>
-              <p className="text-sm">{goal.description}</p>
-              <p className="text-sm">{goal.itemsCompleted}/{goal.itemsTotal} itens</p>
-              <p className="text-sm">{goal.completed ? 'Concluída' : 'Não Concluída'}</p>
-              <ul className="mt-2">
+              <h2 className="text-2xl font-semibold text-gray-900 mb-2">{goal.title}</h2>
+              <p className="text-gray-700 mb-4">{goal.description}</p>
+              <div className="flex items-center mb-4">
+                <BsFillBarChartFill className="text-blue-500 mr-2" />
+                <p className="text-gray-600">{goal.itemsCompleted}/{goal.itemsTotal} itens concluídos</p>
+              </div>
+              <ul className="space-y-2">
                 {goal.tasks.map(task => (
                   <li
                     key={task.id}
-                    className='flex items-center justify-between bg-gray-100 p-2 rounded mb-1'
+                    className='flex items-center justify-between bg-gray-50 p-3 rounded-lg border border-gray-300'
                   >
-                    <span>{task.name}</span>
+                    <span className="flex items-center space-x-2">
+                      {task.status === 'done' ? (
+                        <AiOutlineCheck className="text-green-500" />
+                      ) : (
+                        <AiOutlineClose className="text-red-500" />
+                      )}
+                      <span>{task.name}</span>
+                    </span>
                     <button 
-                      className={`px-2 py-1 rounded ${task.status === 'done' ? 'bg-green-500 text-white' : 'bg-gray-300 text-black'}`}
+                      className={`px-3 py-1 rounded-full text-sm ${task.status === 'done' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}
                     >
                       {task.status}
                     </button>
