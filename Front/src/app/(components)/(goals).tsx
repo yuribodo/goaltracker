@@ -194,14 +194,15 @@ const Goals = () => {
           .filter(goal => !goal.completed) // Filtra para mostrar apenas metas não completadas
           .map((goal) => (
             <motion.div
-              key={goal.id}
-              onClick={() => openModalGoal(goal)}
-              className="px-8 py-6 bg-white rounded-lg shadow-lg cursor-pointer hover:shadow-xl transition-shadow duration-300 ease-in-out"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <h2 className="font-bold text-lg">{goal.title}</h2>
-              <h3 className="text-sm">{goal.itemsCompleted}/{goal.itemsTotal} itens</h3>
+                key={goal.id}
+                onClick={() => openModalGoal(goal)}
+                className="px-8 py-6 bg-white rounded-lg shadow-lg cursor-pointer hover:shadow-2xl hover:border-blue-300 border border-transparent transition-shadow duration-300 ease-in-out"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+              <h2 className="text-2xl font-semibold text-gray-900 mb-2">{goal.title}</h2>
+              <h3 className="text-base text-gray-600 mb-2">{goal.itemsCompleted}/{goal.itemsTotal} itens</h3>
+              <p className="text-sm text-gray-700 mt-1">{goal.description}</p>
               <div className="relative pt-1">
                 <div className="overflow-hidden h-2 text-xs flex rounded bg-blue-200">
                   <motion.div
@@ -213,7 +214,7 @@ const Goals = () => {
                   ></motion.div>
                 </div>
               </div>
-              <p className="text-sm mt-2">{goal.description}</p>
+              
               <p className="text-sm">{goal.completed ? 'Concluída' : 'Não Concluída'}</p>
               <h3 className="font-bold mt-2">Tarefas:</h3>
               <ul>
