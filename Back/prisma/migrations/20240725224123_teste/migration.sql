@@ -18,8 +18,5 @@ CREATE TABLE "Task" (
     CONSTRAINT "Task_pkey" PRIMARY KEY ("id")
 );
 
--- CreateIndex
-CREATE INDEX "goalId_idx" ON "Task"("goalId");
-
 -- AddForeignKey
 ALTER TABLE "Task" ADD CONSTRAINT "Task_goalId_fkey" FOREIGN KEY ("goalId") REFERENCES "Goal"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

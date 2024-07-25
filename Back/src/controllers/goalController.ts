@@ -48,7 +48,7 @@ export const createGoal = async (req: Request, res: Response) => {
   }
 
   const validStatuses = ["todo", "done"];
-  if (tasks.some((task: any) => !validStatuses.includes(task.status))) {
+  if (tasks.some((task: any) => typeof task.status !== 'string' || !validStatuses.includes(task.status))) {
     return res.status(400).json({ error: "Invalid task status. Allowed values are 'todo' and 'done'." });
   }
 
@@ -76,6 +76,7 @@ export const createGoal = async (req: Request, res: Response) => {
     }
   }
 };
+
 
 export const updateGoal = async (req: Request, res: Response) => {
   const { id } = req.params;
