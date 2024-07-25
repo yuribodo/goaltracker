@@ -20,7 +20,11 @@ const Goals = () => {
   const fetchGoals = async () => {
     try {
       const response = await axios.get('http://localhost:8080/goals');
-      setGoals(response.data.map((goal: Goal) => ({ ...goal, tasks: goal.tasks || [] })));
+      const loadedGoals = response.data.map((goal: Goal) => ({
+        ...goal,
+        tasks: goal.tasks || []
+      }));
+      setGoals(loadedGoals);
     } catch (error) {
       console.error("Error fetching goals:", error);
     }
@@ -42,15 +46,15 @@ const Goals = () => {
       title: newGoalTitle,
       description: newGoalDescription,
       completed: false, // Assumindo que novas metas começam como não concluídas
-      tasks: Array.isArray(newTasks) ? newTasks.map(task => ({
+      tasks: newTasks.map(task => ({
         name: task.name,
         status: task.status
-      })) : [] // Garantir que tasks seja um array
+      }))
     };
     
     try {
       const response = await axios.post('http://localhost:8080/goals', newGoal);
-      setGoals([...goals, response.data]);
+      await fetchGoals(); // Atualiza a lista de metas após adicionar uma nova meta
       closeModal();
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -88,7 +92,7 @@ const Goals = () => {
   };
 
   const openModalGoal = (goal: Goal) => {
-    setSelectedGoal(goal);
+    setSelectedGoal({ ...goal, tasks: goal.tasks || [] });
     setGoalModalIsOpen(true);
   };
 
@@ -232,68 +236,69 @@ const Goals = () => {
                 />
                 <button type="button" onClick={addTask} className="bg-blue-500 text-white p-2 rounded mt-2">Adicionar Tarefa</button>
                 <ul className="mt-2">
-                  {newTasks.map(task => (
-                    <li key={task.id} className="flex justify-between items-center border-b py-2">
-                      <span>{task.name}</span>
-                      <button
-                        type="button"
-                        onClick={() => setNewTasks(newTasks.filter(t => t.id !== task.id))}
-                        className="text-red-500"
-                      >
-                        Remover
-                      </button>
+                  {newTasks.map((task, index) => (
+                    <li key={index} className="p-2 border-b border-gray-200">
+                      {task.name}
                     </li>
                   ))}
                 </ul>
               </div>
-              <button type="submit" className="bg-blue-500 text-white p-2 rounded">Adicionar Meta</button>
+              <div className="flex justify-end">
+                <button type="submit" className="bg-blue-500 text-white p-2 rounded">Adicionar Meta</button>
+              </div>
             </form>
-            <button onClick={closeModal} className="mt-4 text-red-500">Cancelar</button>
           </motion.div>
         </motion.div>
       </Modal>
-      {selectedGoal && (
-        <Modal
-          isOpen={goalModalIsOpen}
-          onRequestClose={closeModalGoal}
-          contentLabel="Detalhes da Meta"
-          className="flex items-center justify-center h-full"
-          overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
+      <Modal
+        isOpen={goalModalIsOpen}
+        onRequestClose={closeModalGoal}
+        contentLabel="Detalhes da Meta"
+        className="modal"
+        overlayClassName="overlay"
+      >
+        <motion.div
+          className="fixed inset-0 flex items-center justify-center z-50 bg-gray-900 bg-opacity-50"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.3 }}
         >
-          <div className="bg-white rounded-lg p-8">
-            <h2 className="text-2xl font-semibold mb-4">{selectedGoal.title}</h2>
-            <p className="mb-4">{selectedGoal.description}</p>
-            <div className="mb-4">
-              <h3 className="font-bold">Tarefas:</h3>
-              <ul>
-                {selectedGoal.tasks.map((task) => (
-                  <li
-                    key={task.id}
-                    className="flex items-center justify-between mb-2"
-                  >
-                    <span>{task.name}</span>
-                    <button
-                      onClick={() => toggleTaskStatus(task.id)}
-                      className={`px-3 py-1 rounded-full text-xs font-semibold ${task.status === 'done' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'
-                        }`}
+          <motion.div
+            className="bg-white rounded-lg p-8 max-w-xl w-full"
+            initial={{ scale: 0.8 }}
+            animate={{ scale: 1 }}
+            exit={{ scale: 0.8 }}
+            transition={{ duration: 0.3 }}
+          >
+            {selectedGoal && (
+              <>
+                <h2 className="text-2xl font-bold">{selectedGoal.title}</h2>
+                <p className="mt-2">{selectedGoal.description}</p>
+                <ul className="mt-4">
+                  {selectedGoal.tasks.map((task) => (
+                    <li
+                      key={task.id}
+                      className="p-2 border-b border-gray-200 flex justify-between items-center"
                     >
-                      {task.status === 'done' ? 'Concluído' : 'Pendente'}
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div className="flex justify-end">
-              <button
-                onClick={closeModalGoal}
-                className="mr-2 px-4 py-2 bg-gray-500 text-white rounded-md"
-              >
-                Fechar
-              </button>
-            </div>
-          </div>
-        </Modal>
-      )}
+                      <span>{task.name}</span>
+                      <button
+                        className={`p-2 rounded ${task.status === 'done' ? 'bg-green-500' : 'bg-red-500'} text-white`}
+                        onClick={() => toggleTaskStatus(task.id)}
+                      >
+                        {task.status === 'done' ? 'Concluída' : 'Pendente'}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+                <div className="flex justify-end mt-4">
+                  <button onClick={closeModalGoal} className="bg-blue-500 text-white p-2 rounded">Fechar</button>
+                </div>
+              </>
+            )}
+          </motion.div>
+        </motion.div>
+      </Modal>
     </div>
   );
 };
