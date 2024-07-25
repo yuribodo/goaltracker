@@ -258,40 +258,46 @@ const Goals = () => {
         overlayClassName="overlay"
       >
         <motion.div
-          className="fixed inset-0 flex items-center justify-center z-50 bg-gray-900 bg-opacity-50"
+          className="fixed inset-0 flex items-center justify-center z-50 bg-gray-900 bg-opacity-60"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.3 }}
+          transition={{ duration: 0.4 }}
         >
           <motion.div
-            className="bg-white rounded-lg p-8 max-w-xl w-full"
-            initial={{ scale: 0.8 }}
-            animate={{ scale: 1 }}
-            exit={{ scale: 0.8 }}
-            transition={{ duration: 0.3 }}
+            className="bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 rounded-lg p-8 max-w-xl w-full shadow-lg"
+            initial={{ scale: 0.8, y: -20 }}
+            animate={{ scale: 1, y: 0 }}
+            exit={{ scale: 0.8, y: -20 }}
+            transition={{ duration: 0.4 }}
           >
-            <h2 className="text-2xl font-bold">Detalhes da Meta</h2>
+            <h2 className="text-3xl font-bold text-white mb-4">Detalhes da Meta</h2>
             {selectedGoal && (
               <div>
-                <p><strong>Título:</strong> {selectedGoal.title}</p>
-                <p><strong>Descrição:</strong> {selectedGoal.description}</p>
-                <ul>
+                <p className="text-lg text-gray-200 mb-2"><strong>Título:</strong> {selectedGoal.title}</p>
+                <p className="text-md text-gray-300 mb-4"><strong>Descrição:</strong> {selectedGoal.description}</p>
+                <ul className="list-disc pl-5 space-y-2">
                   {selectedGoal.tasks.map(task => (
-                    <li key={task.id}>
+                    <li key={task.id} className="flex items-center text-gray-100">
                       <input
                         type="checkbox"
                         checked={task.status === 'done'}
                         onChange={() => toggleTaskStatus(task.id)}
+                        className="mr-2"
                       />
-                      {task.name}
+                      <span className={`text-base ${task.status === 'done' ? 'line-through' : ''}`}>{task.name}</span>
                     </li>
                   ))}
                 </ul>
               </div>
             )}
-            <div className="flex justify-end mt-4">
-              <button onClick={closeModalGoal} className="bg-blue-500 text-white p-2 rounded">Fechar</button>
+            <div className="flex justify-end mt-6">
+              <button
+                onClick={closeModalGoal}
+                className="bg-white text-blue-500 hover:bg-gray-100 p-2 rounded transition duration-300"
+              >
+                Fechar
+              </button>
             </div>
           </motion.div>
         </motion.div>
