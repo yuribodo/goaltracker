@@ -64,7 +64,6 @@ const Goals = () => {
       }
     }
   };
-  
 
   const addTask = () => {
     if (!newTaskName) return;
@@ -104,19 +103,19 @@ const Goals = () => {
   const toggleTaskStatus = async (taskId: number) => {
     if (!selectedGoal) return;
 
-    // Atualiza a tarefa localmente
     const updatedTasks = selectedGoal.tasks.map(task =>
       task.id === taskId ? { ...task, status: task.status === 'done' ? 'todo' : 'done' } : task
     );
 
-    // Atualiza a meta localmente
+    const allTasksDone = updatedTasks.every(task => task.status === 'done');
+    
     const updatedGoal = {
       ...selectedGoal,
       tasks: updatedTasks,
+      completed: allTasksDone,
       itemsCompleted: updatedTasks.filter(task => task.status === 'done').length,
     };
 
-    // Atualiza o estado local
     setSelectedGoal(updatedGoal);
     setGoals(prevGoals =>
       prevGoals.map(goal =>
@@ -125,9 +124,7 @@ const Goals = () => {
     );
 
     try {
-      // Atualiza a meta no backend
       await axios.put(`http://localhost:8080/goals/${updatedGoal.id}`, updatedGoal);
-      // Atualiza a lista de metas
       await fetchGoals();
     } catch (error) {
       console.error("Error updating task status:", error);
@@ -141,9 +138,12 @@ const Goals = () => {
       task.id === updatedTask.id ? updatedTask : task
     );
 
+    const allTasksDone = updatedTasks.every(task => task.status === 'done');
+    
     const updatedGoal = {
       ...selectedGoal,
       tasks: updatedTasks,
+      completed: allTasksDone,
       itemsCompleted: updatedTasks.filter(task => task.status === 'done').length,
     };
 
