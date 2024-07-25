@@ -7,7 +7,6 @@ import axios from 'axios';
 import GoalCard from './(goalCard)';
 import { Goal, Task } from '../(types)/types';
 
-
 const Goals = () => {
   const [goals, setGoals] = useState<Goal[]>([]);
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -18,7 +17,7 @@ const Goals = () => {
   const [newTaskName, setNewTaskName] = useState('');
   const [newTasks, setNewTasks] = useState<Task[]>([]);
 
-  const refreshGoals = async () => {
+  const fetchGoals = async () => {
     try {
       const response = await axios.get('http://localhost:8080/goals');
       setGoals(response.data.map((goal: Goal) => ({ ...goal, tasks: goal.tasks || [] })));
@@ -28,37 +27,27 @@ const Goals = () => {
   };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get('http://localhost:8080/goals');
-        const data = response.data;
-        setGoals(data.map((goal: Goal) => ({ ...goal, tasks: goal.tasks || [] })));
-      } catch (error) {
-        console.error("Error fetching goals:", error);
-      }
-    };
-
-    fetchData();
+    fetchGoals();
   }, []);
 
   const addNewGoal = async (event: React.FormEvent) => {
     event.preventDefault();
-
+  
     if (goals.length >= 8) {
       alert('Limite máximo de 8 metas atingido.');
       return;
     }
-
-    const newGoal: Goal = {
-      id: goals.length + 1,
+  
+    const newGoal = {
       title: newGoalTitle,
       description: newGoalDescription,
-      itemsCompleted: 0,
-      itemsTotal: newTasks.length,
-      completed: false,
-      tasks: newTasks
+      completed: false, // Assumindo que novas metas começam como não concluídas
+      tasks: Array.isArray(newTasks) ? newTasks.map(task => ({
+        name: task.name,
+        status: task.status
+      })) : [] // Garantir que tasks seja um array
     };
-
+  
     try {
       const response = await axios.post('http://localhost:8080/goals', newGoal);
       setGoals([...goals, response.data]);
@@ -130,7 +119,7 @@ const Goals = () => {
       // Atualiza a meta no backend
       await axios.put(`http://localhost:8080/goals/${updatedGoal.id}`, updatedGoal);
       // Atualiza a lista de metas
-      await refreshGoals();
+      await fetchGoals();
     } catch (error) {
       console.error("Error updating task status:", error);
     }
@@ -186,71 +175,77 @@ const Goals = () => {
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
-        contentLabel="Adicionar Nova Meta"
-        className="flex items-center justify-center h-full"
-        overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
+        contentLabel="Nova Meta"
+        className="modal"
+        overlayClassName="overlay"
       >
-        <div className="bg-white rounded-lg p-8">
-          <h2 className="text-2xl font-semibold mb-4">Adicionar Nova Meta</h2>
-          <form onSubmit={addNewGoal}>
-            <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2">
-                Título da Meta
-              </label>
-              <input
-                type="text"
-                value={newGoalTitle}
-                onChange={(e) => setNewGoalTitle(e.target.value)}
-                className="border border-gray-300 rounded-md w-full py-2 px-3"
-              />
-            </div>
-            <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2">
-                Descrição da Meta
-              </label>
-              <textarea
-                value={newGoalDescription}
-                onChange={(e) => setNewGoalDescription(e.target.value)}
-                className="border border-gray-300 rounded-md w-full py-2 px-3"
-              ></textarea>
-            </div>
-            <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2">
-                Tarefas
-              </label>
-              <div className="flex">
+        <motion.div
+          className="fixed inset-0 flex items-center justify-center z-50 bg-gray-900 bg-opacity-50"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.3 }}
+        >
+          <motion.div
+            className="bg-white rounded-lg p-8 max-w-xl w-full"
+            initial={{ scale: 0.8 }}
+            animate={{ scale: 1 }}
+            exit={{ scale: 0.8 }}
+            transition={{ duration: 0.3 }}
+          >
+            <h2 className="text-2xl font-bold">Adicionar Nova Meta</h2>
+            <form onSubmit={addNewGoal} className="mt-4">
+              <div className="mb-4">
+                <label className="block text-sm font-medium">Título</label>
+                <input
+                  type="text"
+                  value={newGoalTitle}
+                  onChange={(e) => setNewGoalTitle(e.target.value)}
+                  placeholder="Título da meta"
+                  className="border p-2 rounded w-full"
+                  required
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block text-sm font-medium">Descrição</label>
+                <textarea
+                  value={newGoalDescription}
+                  onChange={(e) => setNewGoalDescription(e.target.value)}
+                  placeholder="Descrição da meta"
+                  className="border p-2 rounded w-full"
+                  required
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block text-sm font-medium">Tarefas</label>
                 <input
                   type="text"
                   value={newTaskName}
                   onChange={(e) => setNewTaskName(e.target.value)}
-                  className="border border-gray-300 rounded-md w-full py-2 px-3"
+                  placeholder="Nome da nova tarefa"
+                  className="border p-2 rounded w-full"
                 />
-                <button
-                  type="button"
-                  onClick={addTask}
-                  className="ml-2 px-4 py-2 bg-blue-500 text-white rounded-md"
-                >
-                  Adicionar Tarefa
-                </button>
+                <button type="button" onClick={addTask} className="bg-blue-500 text-white p-2 rounded mt-2">Adicionar Tarefa</button>
+                <ul className="mt-2">
+                  {newTasks.map(task => (
+                    <li key={task.id} className="flex justify-between items-center border-b py-2">
+                      <span>{task.name}</span>
+                      <button
+                        type="button"
+                        onClick={() => setNewTasks(newTasks.filter(t => t.id !== task.id))}
+                        className="text-red-500"
+                      >
+                        Remover
+                      </button>
+                    </li>
+                  ))}
+                </ul>
               </div>
-            </div>
-            <div className="flex justify-end">
-              <button
-                type="button"
-                onClick={closeModal}
-                className="mr-2 px-4 py-2 bg-gray-500 text-white rounded-md"
-              >
-                Cancelar
-              </button>
-              <button
-                type="submit"
-                className="px-4 py-2 bg-blue-500 text-white rounded-md"
-              >
-                Salvar Meta
-              </button>
-            </div>
-          </form>
-        </div>
+              <button type="submit" className="bg-blue-500 text-white p-2 rounded">Adicionar Meta</button>
+            </form>
+            <button onClick={closeModal} className="mt-4 text-red-500">Cancelar</button>
+          </motion.div>
+        </motion.div>
       </Modal>
       {selectedGoal && (
         <Modal
