@@ -14,24 +14,17 @@ datasource db {
 }
 
 model Goal {
-  id          Int      @id @default(autoincrement())
+  id          Int     @id @default(autoincrement())
   title       String
   description String
   completed   Boolean
-  tasks       Task[]   @relation("GoalTasks")
+  tasks       Task[]
 }
 
 model Task {
   id       Int    @id @default(autoincrement())
   name     String
-  status   TaskStatus
+  status   String
   goalId   Int
-  goal     Goal   @relation("GoalTasks", fields: [goalId], references: [id])
-
-  @@index([goalId], name: "goalId_idx")
-}
-
-enum TaskStatus {
-  todo
-  done
+  goal     Goal   @relation(fields: [goalId], references: [id])
 }

@@ -22,7 +22,7 @@ export const getGoalById = async (req: Request, res: Response) => {
   const { id } = req.params;
   try {
     const goal = await prisma.goal.findUnique({
-      where: { id: Number(id) },
+      where: { id: parseInt(id, 10) },  // Converter id para número
       include: { tasks: true }
     });
     if (!goal) {
@@ -77,7 +77,6 @@ export const createGoal = async (req: Request, res: Response) => {
   }
 };
 
-
 export const updateGoal = async (req: Request, res: Response) => {
   const { id } = req.params;
   const { title, description, completed, tasks } = req.body;
@@ -89,16 +88,15 @@ export const updateGoal = async (req: Request, res: Response) => {
 
   try {
     const goal = await prisma.goal.update({
-      where: { id: Number(id) },
+      where: { id: parseInt(id, 10) },  // Converter id para número
       data: {
         title,
         description,
         completed,
         tasks: {
-          // Separate new tasks from tasks to update
           create: tasks ? tasks.filter((task: any) => !task.id) : [], // Create new tasks
           update: tasks ? tasks.filter((task: any) => task.id).map((task: any) => ({
-            where: { id: task.id }, // Identificador da tarefa para atualizar
+            where: { id: parseInt(task.id, 10) }, // Converter id para número
             data: {
               name: task.name,
               status: task.status
@@ -122,7 +120,7 @@ export const deleteGoal = async (req: Request, res: Response) => {
   const { id } = req.params;
   try {
     await prisma.goal.delete({
-      where: { id: Number(id) }
+      where: { id: parseInt(id, 10) }  // Converter id para número
     });
     res.json({ message: 'Goal deleted successfully' });
   } catch (error) {
