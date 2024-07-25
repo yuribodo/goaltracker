@@ -27,26 +27,30 @@ const GoalCard: React.FC<GoalCardProps> = ({ goal, onClick }) => {
         <p className="text-gray-600">{goal.itemsCompleted}/{goal.itemsTotal} itens concluídos</p>
       </div>
       <ul className="space-y-2">
-        {goal.tasks.map((task: Task) => (
-          <li
-            key={task.id}
-            className='flex items-center justify-between bg-gray-50 p-3 rounded-lg border border-gray-300'
-          >
-            <span className="flex items-center space-x-2">
-              {task.status === 'done' ? (
-                <AiOutlineCheck className="text-green-500" />
-              ) : (
-                <AiOutlineClose className="text-red-500" />
-              )}
-              <span>{task.name}</span>
-            </span>
-            <button 
-              className={`px-3 py-1 rounded-full text-sm ${task.status === 'done' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}
+        {Array.isArray(goal.tasks) && goal.tasks.length > 0 ? (
+          goal.tasks.map((task: Task) => (
+            <li
+              key={task.id}
+              className='flex items-center justify-between bg-gray-50 p-3 rounded-lg border border-gray-300'
             >
-              {task.status}
-            </button>
-          </li>
-        ))}
+              <span className="flex items-center space-x-2">
+                {task.status === 'done' ? (
+                  <AiOutlineCheck className="text-green-500" />
+                ) : (
+                  <AiOutlineClose className="text-red-500" />
+                )}
+                <span>{task.name}</span>
+              </span>
+              <button 
+                className={`px-3 py-1 rounded-full text-sm ${task.status === 'done' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}
+              >
+                {task.status}
+              </button>
+            </li>
+          ))
+        ) : (
+          <p className="text-gray-500">Nenhuma tarefa disponível</p>
+        )}
       </ul>
     </motion.div>
   );

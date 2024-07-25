@@ -32,12 +32,12 @@ const Goals = () => {
 
   const addNewGoal = async (event: React.FormEvent) => {
     event.preventDefault();
-  
+    
     if (goals.length >= 8) {
       alert('Limite máximo de 8 metas atingido.');
       return;
     }
-  
+    
     const newGoal = {
       title: newGoalTitle,
       description: newGoalDescription,
@@ -47,15 +47,20 @@ const Goals = () => {
         status: task.status
       })) : [] // Garantir que tasks seja um array
     };
-  
+    
     try {
       const response = await axios.post('http://localhost:8080/goals', newGoal);
       setGoals([...goals, response.data]);
       closeModal();
     } catch (error) {
-      console.error("Error adding new goal:", error);
+      if (axios.isAxiosError(error)) {
+        console.error("Axios error adding new goal:", error.message);
+      } else {
+        console.error("Unexpected error adding new goal:", error);
+      }
     }
   };
+  
 
   const addTask = () => {
     if (!newTaskName) return;
