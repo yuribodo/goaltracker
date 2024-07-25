@@ -41,6 +41,12 @@ export const getGoalById = async (req: Request, res: Response) => {
 export const createGoal = async (req: Request, res: Response) => {
   const { title, description, completed, tasks } = req.body;
 
+  console.log("Request body:", req.body);
+
+  if (!Array.isArray(tasks)) {
+    return res.status(400).json({ error: "Tasks should be an array." });
+  }
+
   const validStatuses = ["todo", "done"];
   if (tasks.some((task: any) => !validStatuses.includes(task.status))) {
     return res.status(400).json({ error: "Invalid task status. Allowed values are 'todo' and 'done'." });
@@ -53,12 +59,16 @@ export const createGoal = async (req: Request, res: Response) => {
         description,
         completed,
         tasks: {
-          create: tasks
+          create: tasks.map((task: any) => ({
+            name: task.name,
+            status: task.status
+          }))
         }
       }
     });
     res.json(goal);
   } catch (error) {
+    console.error("Error creating goal:", error);
     if (error instanceof Error) {
       res.status(500).json({ error: error.message });
     } else {
@@ -66,6 +76,7 @@ export const createGoal = async (req: Request, res: Response) => {
     }
   }
 };
+
 
 export const updateGoal = async (req: Request, res: Response) => {
   const { id } = req.params;
