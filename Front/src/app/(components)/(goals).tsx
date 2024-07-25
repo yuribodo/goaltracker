@@ -36,25 +36,25 @@ const Goals = () => {
 
   const addNewGoal = async (event: React.FormEvent) => {
     event.preventDefault();
-    
+
     if (goals.length >= 8) {
       alert('Limite máximo de 8 metas atingido.');
       return;
     }
-    
+
     const newGoal = {
       title: newGoalTitle,
       description: newGoalDescription,
-      completed: false, // Assumindo que novas metas começam como não concluídas
+      completed: false,
       tasks: newTasks.map(task => ({
         name: task.name,
         status: task.status
       }))
     };
-    
+
     try {
       const response = await axios.post('http://localhost:8080/goals', newGoal);
-      await fetchGoals(); // Atualiza a lista de metas após adicionar uma nova meta
+      await fetchGoals();
       closeModal();
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -108,7 +108,7 @@ const Goals = () => {
     );
 
     const allTasksDone = updatedTasks.every(task => task.status === 'done');
-    
+
     const updatedGoal = {
       ...selectedGoal,
       tasks: updatedTasks,
@@ -139,7 +139,7 @@ const Goals = () => {
     );
 
     const allTasksDone = updatedTasks.every(task => task.status === 'done');
-    
+
     const updatedGoal = {
       ...selectedGoal,
       tasks: updatedTasks,
@@ -176,7 +176,7 @@ const Goals = () => {
       </div>
       <div className="grid grid-cols-2 gap-4 mr-20 py-6">
         {goals
-          .filter(goal => !goal.completed) // Filtra para mostrar apenas metas não concluídas
+          .filter(goal => !goal.completed)
           .map(goal => (
             <GoalCard key={goal.id} goal={goal} onClick={() => openModalGoal(goal)} />
           ))}
@@ -271,31 +271,28 @@ const Goals = () => {
             exit={{ scale: 0.8 }}
             transition={{ duration: 0.3 }}
           >
+            <h2 className="text-2xl font-bold">Detalhes da Meta</h2>
             {selectedGoal && (
-              <>
-                <h2 className="text-2xl font-bold">{selectedGoal.title}</h2>
-                <p className="mt-2">{selectedGoal.description}</p>
-                <ul className="mt-4">
-                  {selectedGoal.tasks.map((task) => (
-                    <li
-                      key={task.id}
-                      className="p-2 border-b border-gray-200 flex justify-between items-center"
-                    >
-                      <span>{task.name}</span>
-                      <button
-                        className={`p-2 rounded ${task.status === 'done' ? 'bg-green-500' : 'bg-red-500'} text-white`}
-                        onClick={() => toggleTaskStatus(task.id)}
-                      >
-                        {task.status === 'done' ? 'Concluída' : 'Pendente'}
-                      </button>
+              <div>
+                <p><strong>Título:</strong> {selectedGoal.title}</p>
+                <p><strong>Descrição:</strong> {selectedGoal.description}</p>
+                <ul>
+                  {selectedGoal.tasks.map(task => (
+                    <li key={task.id}>
+                      <input
+                        type="checkbox"
+                        checked={task.status === 'done'}
+                        onChange={() => toggleTaskStatus(task.id)}
+                      />
+                      {task.name}
                     </li>
                   ))}
                 </ul>
-                <div className="flex justify-end mt-4">
-                  <button onClick={closeModalGoal} className="bg-blue-500 text-white p-2 rounded">Fechar</button>
-                </div>
-              </>
+              </div>
             )}
+            <div className="flex justify-end mt-4">
+              <button onClick={closeModalGoal} className="bg-blue-500 text-white p-2 rounded">Fechar</button>
+            </div>
           </motion.div>
         </motion.div>
       </Modal>
