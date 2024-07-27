@@ -3,20 +3,7 @@ import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import axios from 'axios';
 import { AiOutlineCheck, AiOutlineLoading3Quarters, AiOutlineUnorderedList } from 'react-icons/ai';
-
-interface Task {
-  id: number;
-  name: string;
-  status: 'done' | 'todo' | string;
-}
-
-interface Goal {
-  id: number;
-  title: string;
-  description: string;
-  completed: boolean;
-  tasks: Task[];
-}
+import { Goal, Task } from '../(types)/types';
 
 export default function Header() {
   const [stats, setStats] = useState({
