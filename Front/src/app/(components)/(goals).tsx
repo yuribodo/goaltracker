@@ -189,67 +189,102 @@ const Goals = () => {
         overlayClassName="overlay"
       >
         <motion.div
-          className="fixed inset-0 flex items-center justify-center z-50 bg-gray-900 bg-opacity-50"
+          className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-60"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.3 }}
         >
           <motion.div
-            className="bg-white rounded-lg p-8 max-w-xl w-full"
-            initial={{ scale: 0.8 }}
-            animate={{ scale: 1 }}
-            exit={{ scale: 0.8 }}
+            className="relative bg-gradient-to-r from-blue-400 via-teal-400 to-green-400 rounded-lg p-8 max-w-lg w-full shadow-xl"
+            initial={{ scale: 0.95, y: -20 }}
+            animate={{ scale: 1, y: 0 }}
+            exit={{ scale: 0.95, y: -20 }}
             transition={{ duration: 0.3 }}
           >
-            <h2 className="text-2xl font-bold">Adicionar Nova Meta</h2>
-            <form onSubmit={addNewGoal} className="mt-4">
-              <div className="mb-4">
-                <label className="block text-sm font-medium">Título</label>
+            <button
+              onClick={closeModal}
+              className="absolute top-4 right-4 text-white hover:text-gray-200 transition duration-300"
+              aria-label="Fechar"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+            <h2 className="text-3xl font-extrabold text-white mb-6">Adicionar Nova Meta</h2>
+            <form onSubmit={addNewGoal} className="space-y-6">
+              <div className="mb-6">
+                <label className="block text-sm font-semibold text-white mb-2">Título</label>
                 <input
                   type="text"
                   value={newGoalTitle}
                   onChange={(e) => setNewGoalTitle(e.target.value)}
                   placeholder="Título da meta"
-                  className="border p-2 rounded w-full"
+                  className="border border-gray-200 bg-gray-800 text-white p-3 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-300 transition duration-300"
                   required
                 />
               </div>
-              <div className="mb-4">
-                <label className="block text-sm font-medium">Descrição</label>
+              <div className="mb-6">
+                <label className="block text-sm font-semibold text-white mb-2">Descrição</label>
                 <textarea
                   value={newGoalDescription}
                   onChange={(e) => setNewGoalDescription(e.target.value)}
                   placeholder="Descrição da meta"
-                  className="border p-2 rounded w-full"
+                  className="border border-gray-200 bg-gray-800 text-white p-3 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-300 transition duration-300"
                   required
                 />
               </div>
-              <div className="mb-4">
-                <label className="block text-sm font-medium">Tarefas</label>
-                <input
-                  type="text"
-                  value={newTaskName}
-                  onChange={(e) => setNewTaskName(e.target.value)}
-                  placeholder="Nome da nova tarefa"
-                  className="border p-2 rounded w-full"
-                />
-                <button type="button" onClick={addTask} className="bg-blue-500 text-white p-2 rounded mt-2">Adicionar Tarefa</button>
-                <ul className="mt-2">
+              <div className="mb-6">
+                <label className="block text-sm font-semibold text-white mb-2">Tarefas</label>
+                <div className="flex space-x-3">
+                  <input
+                    type="text"
+                    value={newTaskName}
+                    onChange={(e) => setNewTaskName(e.target.value)}
+                    placeholder="Nome da nova tarefa"
+                    className="border border-gray-200 bg-gray-800 text-white p-3 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-300 transition duration-300"
+                  />
+                  <button
+                    type="button"
+                    onClick={addTask}
+                    className="bg-blue-500 text-white p-3 rounded-lg hover:bg-blue-600 transition duration-300"
+                  >
+                    Adicionar
+                  </button>
+                </div>
+                <ul className="mt-4">
                   {newTasks.map((task, index) => (
-                    <li key={index} className="p-2 border-b border-gray-200">
+                    <li key={index} className="p-2 bg-gray-700 text-white rounded-lg mb-2">
                       {task.name}
                     </li>
                   ))}
                 </ul>
               </div>
               <div className="flex justify-end">
-                <button type="submit" className="bg-blue-500 text-white p-2 rounded">Adicionar Meta</button>
+                <button
+                  type="submit"
+                  className="bg-blue-500 text-white p-3 rounded-lg hover:bg-blue-600 transition duration-300"
+                >
+                  Criar Meta
+                </button>
               </div>
             </form>
           </motion.div>
         </motion.div>
       </Modal>
+
+
       <Modal
         isOpen={goalModalIsOpen}
         onRequestClose={closeModalGoal}
