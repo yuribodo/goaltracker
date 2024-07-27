@@ -11,6 +11,15 @@ interface GoalCardProps {
 }
 
 const GoalCard: React.FC<GoalCardProps> = ({ goal, onClick }) => {
+  const itemsCompleted = goal.tasks.filter(task => task.status === 'done').length;
+  const itemsTotal = goal.tasks.length;
+  const completionRate = itemsTotal > 0 ? (itemsCompleted / itemsTotal) * 100 : 0;
+
+  // Debugging log
+  console.log('itemsCompleted:', itemsCompleted);
+  console.log('itemsTotal:', itemsTotal);
+  console.log('completionRate:', completionRate);
+
   return (
     <motion.div 
       key={goal.id}
@@ -22,9 +31,17 @@ const GoalCard: React.FC<GoalCardProps> = ({ goal, onClick }) => {
     >
       <h2 className="text-2xl font-semibold text-gray-900 mb-2">{goal.title}</h2>
       <p className="text-gray-700 mb-4">{goal.description}</p>
-      <div className="flex items-center mb-4">
+      <div className="flex items-center mb-2">
         <BsFillBarChartFill className="text-blue-500 mr-2" />
-        <p className="text-gray-600">{goal.itemsCompleted}/{goal.itemsTotal} itens concluídos</p>
+        <p className="text-gray-600">{itemsCompleted}/{itemsTotal} itens concluídos</p>
+      </div>
+      <div className="w-full bg-gray-200 rounded-full h-2.5 mb-4">
+        <motion.div
+          className="bg-blue-500 h-2.5 rounded-full"
+          initial={{ width: 0 }}
+          animate={{ width: `${completionRate}%` }}
+          transition={{ duration: 0.5 }}
+        />
       </div>
       <ul className="space-y-2">
         {Array.isArray(goal.tasks) && goal.tasks.length > 0 ? (
