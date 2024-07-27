@@ -25,35 +25,41 @@ export default function Header() {
     completed: 0
   });
 
+  const fetchData = async () => {
+    try {
+      const response = await axios.get('http://localhost:8080/goals'); // URL da API
+      const goals: Goal[] = response.data;
+
+      // Calculate statistics
+      const totalGoals = goals.length;
+      const inProgress = goals.filter(goal => !goal.completed).length;
+      const completed = goals.filter(goal => goal.completed).length;
+
+      setStats({
+        totalGoals,
+        inProgress,
+        completed
+      });
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get('http://localhost:8080/goals'); // URL da API
-        const goals: Goal[] = response.data;
+    fetchData(); // Initial fetch
 
-        // Calculate statistics
-        const totalGoals = goals.length;
-        const inProgress = goals.filter(goal => !goal.completed).length;
-        const completed = goals.filter(goal => goal.completed).length;
+    const interval = setInterval(() => {
+      fetchData();
+    }, 60000); // Fetch data every 60 seconds
 
-        setStats({
-          totalGoals,
-          inProgress,
-          completed
-        });
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-
-    fetchData();
+    return () => clearInterval(interval); // Cleanup on unmount
   }, []);
 
   return (
-    <div className="bg-gradient-to-r from-green-400 to-green-600 text-white h-[20vh] flex flex-col justify-between p-6 shadow-lg">
+    <div className="bg-gradient-to-r from-green-400 to-green-600 text-white min-h-[20vh] flex flex-col justify-between p-6 shadow-lg">
       <div className="flex items-center justify-between mb-4">
         <motion.h1 
-          className="text-4xl font-extrabold tracking-tight" 
+          className="text-3xl sm:text-4xl font-extrabold tracking-tight" 
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
@@ -61,7 +67,7 @@ export default function Header() {
           Gerenciador de Metas
         </motion.h1>
       </div>
-      <div className="flex justify-around space-x-4 text-center">
+      <div className="flex flex-col sm:flex-row justify-around space-y-4 sm:space-y-0 sm:space-x-4 text-center">
         <motion.div 
           className="flex flex-col items-center"
           initial={{ opacity: 0, scale: 0.9 }}
