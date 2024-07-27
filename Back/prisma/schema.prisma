@@ -19,6 +19,7 @@ model Goal {
   description String
   completed   Boolean
   tasks       Task[]
+  createdAt   DateTime @default(now())
 }
 
 model Task {
