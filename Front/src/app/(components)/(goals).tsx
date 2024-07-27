@@ -157,6 +157,15 @@ const Goals = () => {
     }
   };
 
+  const calculateProgress = () => {
+    if (!selectedGoal) return 0;
+
+    const totalTasks = selectedGoal.tasks.length;
+    const completedTasks = selectedGoal.tasks.filter(task => task.status === 'done').length;
+
+    return totalTasks === 0 ? 0 : (completedTasks / totalTasks) * 100;
+  };
+
   return (
     <div className="flex justify-between">
       <div className="flex justify-between">
@@ -297,39 +306,101 @@ const Goals = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.4 }}
+          transition={{ duration: 0.3 }}
         >
           <motion.div
-            className="bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 rounded-lg p-8 max-w-xl w-full shadow-lg"
-            initial={{ scale: 0.8, y: -20 }}
+            className="bg-white rounded-lg p-6 max-w-lg w-full shadow-xl relative overflow-hidden transform-gpu"
+            initial={{ scale: 0.95, y: -20 }}
             animate={{ scale: 1, y: 0 }}
-            exit={{ scale: 0.8, y: -20 }}
-            transition={{ duration: 0.4 }}
+            exit={{ scale: 0.95, y: -20 }}
+            transition={{ duration: 0.3 }}
           >
-            <h2 className="text-3xl font-bold text-white mb-4">Detalhes da Meta</h2>
-            {selectedGoal && (
+            <button
+              onClick={closeModalGoal}
+              className="absolute top-4 right-4 p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition duration-200"
+              aria-label="Fechar"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-6 w-6 text-gray-700"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+            <div className="flex items-center mb-6">
+              <div className="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center mr-4 shadow-md">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-8 w-8 text-white"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+              </div>
               <div>
-                <p className="text-lg text-gray-200 mb-2"><strong>Título:</strong> {selectedGoal.title}</p>
-                <p className="text-md text-gray-300 mb-4"><strong>Descrição:</strong> {selectedGoal.description}</p>
-                <ul className="list-disc pl-5 space-y-2">
-                  {selectedGoal.tasks.map(task => (
-                    <li key={task.id} className="flex items-center text-gray-100">
-                      <input
-                        type="checkbox"
-                        checked={task.status === 'done'}
-                        onChange={() => toggleTaskStatus(task.id)}
-                        className="mr-2"
-                      />
-                      <span className={`text-base ${task.status === 'done' ? 'line-through' : ''}`}>{task.name}</span>
-                    </li>
-                  ))}
-                </ul>
+                {selectedGoal && (
+                  <>
+                    <h2 className="text-xl font-bold mb-1">{selectedGoal.title}</h2>
+                    <p className="text-lg font-semibold">{selectedGoal.description}</p>
+                  </>
+                )}
+              </div>
+            </div>
+            
+            {selectedGoal && (
+              <div className="mb-6">
+                <h3 className="text-xl font-semibold text-gray-900 mb-3">Progresso</h3>
+                <div className="relative h-4 bg-gray-300 rounded-full">
+                  <motion.div
+                    className="absolute top-0 left-0 h-full bg-green-500 rounded-full"
+                    style={{ width: `${calculateProgress()}%` }}
+                    initial={{ width: 0 }}
+                    animate={{ width: `${calculateProgress()}%` }}
+                    transition={{ duration: 0.5 }}
+                  />
+                </div>
+                <p className="text-sm text-gray-800 mt-2">{calculateProgress().toFixed(0)}% concluído</p>
               </div>
             )}
+
+            <div className="mb-6">
+              <h3 className="text-xl font-semibold text-gray-900 mb-3">Tarefas</h3>
+              <ul className="list-disc pl-5 space-y-2">
+                {selectedGoal?.tasks.map(task => (
+                  <li key={task.id} className="flex items-center text-gray-800">
+                    <input
+                      type="checkbox"
+                      checked={task.status === 'done'}
+                      onChange={() => toggleTaskStatus(task.id)}
+                      className={`mr-3 cursor-pointer ${task.status === 'done' ? 'bg-green-500' : 'bg-gray-300'} transition-colors rounded-md`}
+                    />
+                    <span className={`text-lg ${task.status === 'done' ? 'line-through text-gray-500' : 'text-gray-800'}`}>
+                      {task.name}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
             <div className="flex justify-end mt-6">
               <button
                 onClick={closeModalGoal}
-                className="bg-white text-blue-500 hover:bg-gray-100 p-2 rounded transition duration-300"
+                className="bg-blue-500 text-white hover:bg-blue-600 p-3 rounded-lg text-lg transition duration-200"
               >
                 Fechar
               </button>
@@ -337,6 +408,8 @@ const Goals = () => {
           </motion.div>
         </motion.div>
       </Modal>
+
+
     </div>
   );
 };
