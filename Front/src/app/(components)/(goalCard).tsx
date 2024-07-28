@@ -15,11 +15,6 @@ const GoalCard: React.FC<GoalCardProps> = ({ goal, onClick }) => {
   const itemsTotal = goal.tasks.length;
   const completionRate = itemsTotal > 0 ? (itemsCompleted / itemsTotal) * 100 : 0;
 
-  // Debugging log
-  console.log('itemsCompleted:', itemsCompleted);
-  console.log('itemsTotal:', itemsTotal);
-  console.log('completionRate:', completionRate);
-
   return (
     <motion.div 
       key={goal.id}
