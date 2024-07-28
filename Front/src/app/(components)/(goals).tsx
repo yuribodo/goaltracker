@@ -294,7 +294,9 @@ const Goals = () => {
       </Modal>
 
       <div className="flex flex-wrap justify-center gap-4 p-6">
-        {goals.map((goal) => (
+        {goals
+          .filter(goal => !goal.completed) // Filtrando metas não concluídas
+          .map((goal) => (
           <motion.div
             key={goal.id}
             className="w-full md:w-1/2 lg:w-1/3 p-2"
