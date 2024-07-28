@@ -6,6 +6,8 @@ import { motion } from 'framer-motion';
 import axios from 'axios';
 import GoalCard from './(goalCard)';
 import { Goal, Task } from '../(types)/types';
+const api = process.env.API_LINK;
+
 
 const Goals = () => {
   const [goals, setGoals] = useState<Goal[]>([]);
@@ -19,7 +21,7 @@ const Goals = () => {
 
   const fetchGoals = async () => {
     try {
-      const response = await axios.get('http://localhost:8080/goals');
+      const response = await axios.get(`${api}/goals`);
       const loadedGoals = response.data.map((goal: Goal) => ({
         ...goal,
         tasks: goal.tasks || []
@@ -53,7 +55,7 @@ const Goals = () => {
     };
 
     try {
-      const response = await axios.post('http://localhost:8080/goals', newGoal);
+      const response = await axios.post(`${api}/goals`, newGoal);
       await fetchGoals();
       closeModal();
     } catch (error) {
@@ -124,7 +126,7 @@ const Goals = () => {
     );
 
     try {
-      await axios.put(`http://localhost:8080/goals/${updatedGoal.id}`, updatedGoal);
+      await axios.put(`${api}/goals/${updatedGoal.id}`, updatedGoal);
       await fetchGoals();
     } catch (error) {
       console.error("Error updating task status:", error);
@@ -151,7 +153,7 @@ const Goals = () => {
     setGoals(goals.map(goal => goal.id === updatedGoal.id ? updatedGoal : goal));
 
     try {
-      await axios.put(`http://localhost:8080/goals/${updatedGoal.id}`, updatedGoal);
+      await axios.put(`${api}/goals/${updatedGoal.id}`, updatedGoal);
     } catch (error) {
       console.error("Error updating task:", error);
     }

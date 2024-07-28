@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import axios from 'axios';
 import { AiOutlineCheck, AiOutlineLoading3Quarters, AiOutlineUnorderedList } from 'react-icons/ai';
 import { Goal, Task } from '../(types)/types';
+const api = process.env.API_LINK;
 
 export default function Header() {
   const [stats, setStats] = useState({
@@ -14,7 +15,7 @@ export default function Header() {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get('http://localhost:8080/goals'); // URL da API
+      const response = await axios.get(`${api}/goals`); // URL da API
       const goals: Goal[] = response.data;
 
       // Calculate statistics
