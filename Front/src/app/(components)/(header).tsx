@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import axios from 'axios';
 import { AiOutlineCheck, AiOutlineLoading3Quarters, AiOutlineUnorderedList } from 'react-icons/ai';
-import { Goal, Task } from '../(types)/types';
+import { Goal } from '../(types)/types';
 const api = process.env.NEXT_PUBLIC_API_LINK;
 
 export default function Header() {
@@ -44,10 +44,10 @@ export default function Header() {
   }, []);
 
   return (
-    <div className="bg-gradient-to-r from-green-400 to-green-600 text-white min-h-[20vh] flex flex-col justify-between p-6 shadow-lg">
-      <div className="flex items-center justify-between mb-4">
+    <div className="bg-gradient-to-r from-green-400 to-green-600 text-white min-h-[15vh] flex flex-col justify-between p-4 shadow-md">
+      <div className="flex items-center justify-between mb-2">
         <motion.h1 
-          className="text-3xl sm:text-4xl font-extrabold tracking-tight" 
+          className="text-2xl sm:text-3xl font-extrabold tracking-tight" 
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
@@ -55,16 +55,16 @@ export default function Header() {
           Gerenciador de Metas
         </motion.h1>
       </div>
-      <div className="flex flex-col sm:flex-row justify-around space-y-4 sm:space-y-0 sm:space-x-4 text-center">
+      <div className="grid grid-cols-3 gap-2 text-center">
         <motion.div 
           className="flex flex-col items-center"
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5, delay: 0.2 }}
         >
-          <AiOutlineUnorderedList className="text-3xl mb-2" />
-          <h2 className="text-lg font-semibold">Todas as Metas</h2>
-          <div className="text-3xl font-extrabold">{stats.totalGoals}</div>
+          <AiOutlineUnorderedList className="text-2xl mb-1" />
+          <h2 className="text-md font-semibold">Todas as Metas</h2>
+          <div className="text-2xl font-extrabold">{stats.totalGoals}</div>
         </motion.div>
         <motion.div 
           className="flex flex-col items-center"
@@ -72,9 +72,9 @@ export default function Header() {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5, delay: 0.4 }}
         >
-          <AiOutlineLoading3Quarters className="text-3xl mb-2 animate-spin" />
-          <h2 className="text-lg font-semibold">Em Progresso</h2>
-          <div className="text-3xl font-extrabold">{stats.inProgress}</div>
+          <AiOutlineLoading3Quarters className="text-2xl mb-1 animate-spin" />
+          <h2 className="text-md font-semibold">Em Progresso</h2>
+          <div className="text-2xl font-extrabold">{stats.inProgress}</div>
         </motion.div>
         <motion.div 
           className="flex flex-col items-center"
@@ -82,9 +82,9 @@ export default function Header() {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5, delay: 0.6 }}
         >
-          <AiOutlineCheck className="text-3xl mb-2" />
-          <h2 className="text-lg font-semibold">Completas</h2>
-          <div className="text-3xl font-extrabold">{stats.completed}</div>
+          <AiOutlineCheck className="text-2xl mb-1" />
+          <h2 className="text-md font-semibold">Completas</h2>
+          <div className="text-2xl font-extrabold">{stats.completed}</div>
         </motion.div>
       </div>
     </div>
