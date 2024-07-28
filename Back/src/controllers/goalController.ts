@@ -120,11 +120,20 @@ export const updateGoal = async (req: Request, res: Response) => {
 export const deleteGoal = async (req: Request, res: Response) => {
   const { id } = req.params;
   try {
-    await prisma.goal.delete({
-      where: { id: parseInt(id, 10) }  // Converter id para número
+    // Exclua as tarefas associadas e verifique se foram excluídas
+    const deletedTasks = await prisma.task.deleteMany({
+      where: { goalId: parseInt(id, 10) }
     });
+    console.log(`Deleted tasks: ${deletedTasks.count}`);
+
+    // Depois, exclua a meta
+    const deletedGoal = await prisma.goal.delete({
+      where: { id: parseInt(id, 10) }
+    });
+
     res.json({ message: 'Goal deleted successfully' });
   } catch (error) {
+    console.error("Error deleting goal:", error);
     if (error instanceof Error) {
       res.status(500).json({ error: error.message });
     } else {
@@ -132,3 +141,5 @@ export const deleteGoal = async (req: Request, res: Response) => {
     }
   }
 };
+
+

@@ -167,6 +167,35 @@ const Goals = () => {
     return totalTasks === 0 ? 0 : (completedTasks / totalTasks) * 100;
   };
 
+  const deleteGoal = async (goalId: number) => {
+    try {
+      const response = await axios.delete(`${api}/goals/${goalId}`);
+      console.log('Goal deleted successfully:', response.data);
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        console.error('Error deleting goal:', error.message);
+        if (error.response) {
+          // O servidor respondeu com um código de status fora do intervalo 2xx
+          console.error('Error data:', error.response.data);
+          console.error('Error status:', error.response.status);
+          console.error('Error headers:', error.response.headers);
+        } else if (error.request) {
+          // A requisição foi feita, mas nenhuma resposta foi recebida
+          console.error('No response received:', error.request);
+        }
+      } else {
+        // Algum outro erro ocorreu
+        console.error('Unexpected error:', error);
+      }
+    }
+  };
+  
+  // Exemplo de uso na sua aplicação React
+  const handleDelete = (goalId: number) => {
+    deleteGoal(goalId);
+  };
+  
+
   return (
     <div className="flex flex-col justify-between">
       <div className="flex justify-between w-full">
@@ -419,6 +448,19 @@ const Goals = () => {
                 Fechar
               </button>
             </div>
+            <div className="mt-6">
+            <button
+                    onClick={() => {
+                      if (selectedGoal?.id) {
+                        deleteGoal(selectedGoal.id);
+                        console.log(selectedGoal.id)
+                      }
+                    }}
+                    className="px-4 py-2 bg-red-500 text-white font-semibold rounded-lg hover:bg-red-600 transition duration-300"
+                  >
+                    Deletar Meta
+                  </button>
+        </div>
           </motion.div>
         </motion.div>
       </Modal>
