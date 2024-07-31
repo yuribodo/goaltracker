@@ -4,8 +4,8 @@ import { useState, useEffect } from 'react';
 import Modal from 'react-modal';
 import { motion } from 'framer-motion';
 import axios from 'axios';
-import GoalCard from './(goalCard)';
-import { Goal, Task } from '../(types)/types';
+import GoalCard from './goalCard';
+import { Goal, Task } from '../_types/types';
 const api = process.env.NEXT_PUBLIC_API_LINK;
 
 const Goals = () => {

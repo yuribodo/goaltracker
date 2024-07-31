@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import GoalCard from '../(components)/(goalCard)'; // Certifique-se de ajustar o caminho do arquivo conforme necessário
-import { Goal } from '../(types)/types';
+import GoalCard from '../_components/goalCard'; // Certifique-se de ajustar o caminho do arquivo conforme necessário
+import { Goal } from '../_types/types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 

@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import axios from 'axios';
 import { AiOutlineCheck, AiOutlineLoading3Quarters, AiOutlineUnorderedList } from 'react-icons/ai';
-import { Goal } from '../(types)/types';
+import { Goal } from '../_types/types';
 const api = process.env.NEXT_PUBLIC_API_LINK;
 
 export default function Header() {

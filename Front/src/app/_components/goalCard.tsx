@@ -3,7 +3,7 @@
 import { motion } from 'framer-motion';
 import { AiOutlineCheck, AiOutlineClose } from 'react-icons/ai';
 import { BsFillBarChartFill } from 'react-icons/bs';
-import { Task, Goal } from '../(types)/types';
+import { Task, Goal } from '../_types/types';
 
 interface GoalCardProps {
   goal: Goal;

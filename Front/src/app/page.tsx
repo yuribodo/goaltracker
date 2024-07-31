@@ -1,7 +1,7 @@
 import Link from "next/link";
-import Header from "./(components)/(header)";
-import Goals from "./(components)/(goals)";
-import AuthWrapper from "./(components)/(AuthWrapper)";
+import Header from "./_components/header";
+import Goals from "./_components/goals";
+import AuthWrapper from "./_components/AuthWrapper";
 
 export default function Home() {
     return (

@@ -1,6 +1,6 @@
 "use client"
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation"; // Certifique-se de importar do next/navigation
+import { useRouter } from "next/navigation"; 
 
 const AuthWrapper = ({ children }: { children: React.ReactNode }) => {
   const [isMounted, setIsMounted] = useState(false);
