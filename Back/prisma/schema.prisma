@@ -13,12 +13,22 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  goals     Goal[]   @relation("UserGoals")
+  createdAt DateTime @default(now())
+}
+
 model Goal {
   id          Int     @id @default(autoincrement())
   title       String
   description String
   completed   Boolean
   tasks       Task[]
+  userId      Int
+  user        User     @relation("UserGoals", fields: [userId], references: [id], onDelete: Cascade)
   createdAt   DateTime @default(now())
 }
 
@@ -27,5 +37,7 @@ model Task {
   name     String
   status   String
   goalId   Int
-  goal     Goal   @relation(fields: [goalId], references: [id])
+  goal     Goal   @relation(fields: [goalId], references: [id], onDelete: Cascade)
 }
+
+
