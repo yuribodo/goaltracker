@@ -38,7 +38,7 @@ export const getUserById = async (req: Request, res: Response) => {
 };
 
 export const createUser = async (req: Request, res: Response) => {
-  const { email, password } = req.body;
+  const { username, email, password } = req.body;
 
   try {
     // Hash da senha antes de armazenar
@@ -46,6 +46,7 @@ export const createUser = async (req: Request, res: Response) => {
     const user = await prisma.user.create({
       data: {
         email,
+        username,
         password: hashedPassword,
       }
     });
@@ -61,12 +62,13 @@ export const createUser = async (req: Request, res: Response) => {
 
 export const updateUser = async (req: Request, res: Response) => {
   const { id } = req.params;
-  const { email, password } = req.body;
+  const { username, email, password } = req.body;
 
   try {
     // Atualiza apenas os campos fornecidos
-    const data: { email?: string; password?: string } = {};
+    const data: { email?: string; password?: string; username?: string } = {};
     if (email) data.email = email;
+    if (username) data.username = username;
     if (password) data.password = await bcrypt.hash(password, 10);
 
     const user = await prisma.user.update({
