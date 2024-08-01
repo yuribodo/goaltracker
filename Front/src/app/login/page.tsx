@@ -20,11 +20,6 @@ const LoginPage = () => {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="relative flex items-center justify-center w-full max-w-md p-8 mx-auto bg-white rounded-lg shadow-lg overflow-hidden">
-        <img
-          src="/login-background.jpg" // Adicione uma imagem de fundo se desejar
-          alt="Background"
-          className="absolute inset-0 object-cover w-full h-full opacity-50"
-        />
         <div className="relative z-10">
           <h2 className="mb-6 text-3xl font-bold text-gray-900">Login</h2>
           <input
