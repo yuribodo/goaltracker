@@ -2,18 +2,28 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import axios from 'axios';
+
+const api = process.env.NEXT_PUBLIC_API_LINK; // Certifique-se de que essa variável está configurada corretamente
 
 const LoginPage = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
-  const handleLogin = () => {
-    if (username === "user" && password === "password") {
-      localStorage.setItem("isLoggedIn", "true");
-      router.push("/");
-    } else {
-      alert("Credenciais inválidas!");
+  const handleLogin = async () => {
+    try {
+      const response = await axios.post(`${api}/auth/login`, { username, password });
+      if (response.data.token) {
+        localStorage.setItem("token", response.data.token); // Armazene o token em vez de isLoggedIn
+        router.push("/");
+      } else {
+        setError("Credenciais inválidas!");
+      }
+    } catch (error) {
+      console.error("Error logging in:", error);
+      setError("Ocorreu um erro ao fazer login.");
     }
   };
 
@@ -22,6 +32,7 @@ const LoginPage = () => {
       <div className="relative flex items-center justify-center w-full max-w-md p-8 mx-auto bg-white rounded-lg shadow-lg overflow-hidden">
         <div className="relative z-10">
           <h2 className="mb-6 text-3xl font-bold text-gray-900">Login</h2>
+          {error && <p className="text-red-600 mb-4">{error}</p>}
           <input
             type="text"
             placeholder="Username"

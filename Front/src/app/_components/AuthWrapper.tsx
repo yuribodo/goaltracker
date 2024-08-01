@@ -1,27 +1,29 @@
-"use client"
+"use client";
+
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation"; 
+import { useRouter } from "next/navigation";
 
 const AuthWrapper = ({ children }: { children: React.ReactNode }) => {
-  const [isMounted, setIsMounted] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
   const router = useRouter();
 
   useEffect(() => {
-    setIsMounted(true);
+    const checkLoginStatus = () => {
+      const loggedInStatus = localStorage.getItem("isLoggedIn");
+      setIsLoggedIn(loggedInStatus === "true");
+    };
+
+    checkLoginStatus();
   }, []);
 
   useEffect(() => {
-    if (isMounted) {
-      const isLoggedIn = localStorage.getItem("isLoggedIn");
-
-      if (!isLoggedIn) {
-        router.replace("/login");
-      }
+    if (isLoggedIn === false) {
+      router.replace("/login");
     }
-  }, [isMounted, router]);
+  }, [isLoggedIn, router]);
 
-  if (!isMounted) {
-    return null;
+  if (isLoggedIn === null) {
+    return <div>Loading...</div>;
   }
 
   return <>{children}</>;
