@@ -4,6 +4,7 @@ import cors from 'cors';
 import goalRouter from './routes/goalRoutes';
 import taskRouter from './routes/taskRoutes';
 import userRouter from './routes/userRoutes';
+import authRouter from './routes/authRoutes';
 const app = express()
 const port = process.env.PORT || 8080;
 
@@ -14,6 +15,7 @@ app.use(express.json())
 app.use('/goals', goalRouter)
 app.use('/tasks', taskRouter)
 app.use('/users', userRouter)
+app.use('/auth', authRouter)
 
 app.get('/ping', (req, res) => {
     res.json({message: "pong"}).status(200)
