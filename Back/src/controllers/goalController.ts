@@ -9,7 +9,7 @@ export const getGoals = async (req: Request, res: Response) => {
       include: { tasks: true }
     });
     res.json(goals);
-  } catch (error) {
+  } catch (error: unknown) {
     if (error instanceof Error) {
       res.status(500).json({ error: error.message });
     } else {
@@ -22,14 +22,14 @@ export const getGoalById = async (req: Request, res: Response) => {
   const { id } = req.params;
   try {
     const goal = await prisma.goal.findUnique({
-      where: { id: parseInt(id, 10) },  // Converter id para número
+      where: { id: parseInt(id, 10) },
       include: { tasks: true }
     });
     if (!goal) {
       return res.status(404).json({ error: 'Goal not found' });
     }
     res.json(goal);
-  } catch (error) {
+  } catch (error: unknown) {
     if (error instanceof Error) {
       res.status(500).json({ error: error.message });
     } else {
@@ -39,9 +39,11 @@ export const getGoalById = async (req: Request, res: Response) => {
 };
 
 export const createGoal = async (req: Request, res: Response) => {
-  const { title, description, completed, tasks } = req.body;
+  const { title, description, completed, tasks, userId } = req.body;
 
-  console.log("Request body:", req.body);
+  if (!userId) {
+    return res.status(400).json({ error: 'User ID is required.' });
+  }
 
   if (!Array.isArray(tasks)) {
     return res.status(400).json({ error: "Tasks should be an array." });
@@ -58,6 +60,7 @@ export const createGoal = async (req: Request, res: Response) => {
         title,
         description,
         completed,
+        user: { connect: { id: userId } }, // Associa a Goal com um User
         tasks: {
           create: tasks.map((task: any) => ({
             name: task.name,
@@ -66,8 +69,8 @@ export const createGoal = async (req: Request, res: Response) => {
         }
       }
     });
-    res.json(goal);
-  } catch (error) {
+    res.status(201).json(goal);
+  } catch (error: unknown) {
     console.error("Error creating goal:", error);
     if (error instanceof Error) {
       res.status(500).json({ error: error.message });
@@ -76,7 +79,6 @@ export const createGoal = async (req: Request, res: Response) => {
     }
   }
 };
-
 
 export const updateGoal = async (req: Request, res: Response) => {
   const { id } = req.params;
@@ -89,7 +91,7 @@ export const updateGoal = async (req: Request, res: Response) => {
 
   try {
     const goal = await prisma.goal.update({
-      where: { id: parseInt(id, 10) },  // Converter id para número
+      where: { id: parseInt(id, 10) },
       data: {
         title,
         description,
@@ -107,7 +109,7 @@ export const updateGoal = async (req: Request, res: Response) => {
       }
     });
     res.json(goal);
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("Error updating goal:", error);
     if (error instanceof Error) {
       res.status(500).json({ error: error.message });
@@ -132,7 +134,7 @@ export const deleteGoal = async (req: Request, res: Response) => {
     });
 
     res.json({ message: 'Goal deleted successfully' });
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("Error deleting goal:", error);
     if (error instanceof Error) {
       res.status(500).json({ error: error.message });
@@ -141,5 +143,3 @@ export const deleteGoal = async (req: Request, res: Response) => {
     }
   }
 };
-
-

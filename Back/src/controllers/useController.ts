@@ -8,8 +8,12 @@ export const getUsers = async (req: Request, res: Response) => {
   try {
     const users = await prisma.user.findMany();
     res.json(users);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      res.status(500).json({ error: error.message });
+    } else {
+      res.status(500).json({ error: 'Unknown error occurred' });
+    }
   }
 };
 
@@ -24,8 +28,12 @@ export const getUserById = async (req: Request, res: Response) => {
       return res.status(404).json({ error: 'User not found' });
     }
     res.json(user);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      res.status(500).json({ error: error.message });
+    } else {
+      res.status(500).json({ error: 'Unknown error occurred' });
+    }
   }
 };
 
@@ -42,8 +50,12 @@ export const createUser = async (req: Request, res: Response) => {
       }
     });
     res.status(201).json(user);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      res.status(500).json({ error: error.message });
+    } else {
+      res.status(500).json({ error: 'Unknown error occurred' });
+    }
   }
 };
 
@@ -63,8 +75,12 @@ export const updateUser = async (req: Request, res: Response) => {
     });
 
     res.json(user);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      res.status(500).json({ error: error.message });
+    } else {
+      res.status(500).json({ error: 'Unknown error occurred' });
+    }
   }
 };
 
@@ -75,7 +91,11 @@ export const deleteUser = async (req: Request, res: Response) => {
       where: { id: parseInt(id, 10) }
     });
     res.json({ message: 'User deleted successfully' });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      res.status(500).json({ error: error.message });
+    } else {
+      res.status(500).json({ error: 'Unknown error occurred' });
+    }
   }
 };
