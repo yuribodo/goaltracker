@@ -5,6 +5,7 @@ import Modal from 'react-modal';
 import { motion } from 'framer-motion';
 import axios from 'axios';
 import GoalCard from './goalCard';
+import { jwtDecode } from "jwt-decode";
 import { Goal, Task } from '../_types/types';
 const api = process.env.NEXT_PUBLIC_API_LINK;
 
@@ -17,29 +18,64 @@ const Goals = () => {
   const [newGoalDescription, setNewGoalDescription] = useState('');
   const [newTaskName, setNewTaskName] = useState('');
   const [newTasks, setNewTasks] = useState<Task[]>([]);
+  const token = localStorage.getItem('token'); // Ajuste conforme o local onde o token é armazenado
 
   const fetchGoals = async () => {
+    if (!token) return;
+  
     try {
-      const response = await axios.get(`${api}/goals`);
+      // Decodifica o token para obter o userId
+      const decodedToken: { id: string } = jwtDecode(token);
+      const userId = decodedToken.id;
+  
+      console.log('Fetching goals for userId:', userId); // Adicionado para depuração
+
+      const response = await axios.get(`${api}/goals/user/${userId}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      console.log('Goals response:', response.data); // Adicionado para depuração
+
       const loadedGoals = response.data.map((goal: Goal) => ({
         ...goal,
         tasks: goal.tasks || []
       }));
       setGoals(loadedGoals);
     } catch (error) {
-      console.error("Error fetching goals:", error);
+      console.error('Error fetching goals:', error);
     }
   };
 
+  // Chama fetchGoals quando o componente é montado
   useEffect(() => {
     fetchGoals();
-  }, []);
+  }, [token]);
+    
 
   const addNewGoal = async (event: React.FormEvent) => {
     event.preventDefault();
 
     if (goals.length >= 8) {
       alert('Limite máximo de 8 metas atingido.');
+      return;
+    }
+
+    if (!token) {
+      alert('Usuário não autenticado.');
+      return;
+    }
+
+    // Decodifica o token para obter o userId
+    let userId: string;
+
+    try {
+      // O tipo do decodedToken pode ser ajustado conforme a estrutura do seu token
+      const decodedToken: { id: string } = jwtDecode(token);
+      userId = decodedToken.id; // Ajuste conforme o nome do campo no token
+    } catch (error) {
+      console.error('Erro ao decodificar o token:', error);
       return;
     }
 
@@ -50,7 +86,8 @@ const Goals = () => {
       tasks: newTasks.map(task => ({
         name: task.name,
         status: task.status
-      }))
+      })),
+      userId: userId // Adiciona o userId ao corpo da requisição
     };
 
     try {
@@ -64,7 +101,7 @@ const Goals = () => {
         console.error("Unexpected error adding new goal:", error);
       }
     }
-  };
+};
 
   const addTask = () => {
     if (!newTaskName) return;
