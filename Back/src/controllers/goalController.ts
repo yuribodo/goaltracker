@@ -38,6 +38,28 @@ export const getGoalById = async (req: Request, res: Response) => {
   }
 };
 
+export const getGoalsByUsername = async (req: Request, res: Response) => {
+  const { username } = req.params;
+
+  try {
+    // Fetching the user by username
+    const user = await prisma.user.findUnique({
+      where: { username },
+      include: { goals: true }, // Include associated goals
+    });
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Return the goals associated with the user
+    return res.status(200).json(user.goals);
+  } catch (error) {
+    console.error('Error fetching goals:', error);
+    return res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
 export const createGoal = async (req: Request, res: Response) => {
   const { title, description, completed, tasks, userId } = req.body;
 
