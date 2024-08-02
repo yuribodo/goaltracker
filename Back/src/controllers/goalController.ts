@@ -102,6 +102,28 @@ export const createGoal = async (req: Request, res: Response) => {
   }
 };
 
+export const getGoalsByUserId = async (req: Request, res: Response): Promise<void> => {
+  const userId = parseInt(req.params.userId, 10);
+
+  if (isNaN(userId)) {
+    res.status(400).json({ error: 'Invalid userId' });
+    return;
+  }
+
+  try {
+    const goals = await prisma.goal.findMany({
+      where: {
+        userId: userId // Busca as metas associadas ao userId
+      }
+    });
+    res.json(goals);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'An error occurred while fetching goals' });
+  }
+};
+
+
 export const updateGoal = async (req: Request, res: Response) => {
   const { id } = req.params;
   const { title, description, completed, tasks } = req.body;
