@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import axios from 'axios';
 import { AiOutlineCheck, AiOutlineLoading3Quarters, AiOutlineUnorderedList } from 'react-icons/ai';
 import { Goal } from '../_types/types';
+import { jwtDecode } from "jwt-decode";
 const api = process.env.NEXT_PUBLIC_API_LINK;
 
 export default function Header() {
@@ -12,10 +13,19 @@ export default function Header() {
     inProgress: 0,
     completed: 0
   });
+  const token = localStorage.getItem('token'); // Ajuste conforme o local onde o token é armazenado
 
   const fetchData = async () => {
+    if (!token) return;
+
     try {
-      const response = await axios.get(`${api}/goals`); // URL da API
+      const decodedToken: { id: string } = jwtDecode(token);
+      const userId = decodedToken.id;
+      const response = await axios.get(`${api}/goals/user/${userId}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      }); // URL da API
       const goals: Goal[] = response.data;
 
       // Calculate statistics
