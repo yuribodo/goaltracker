@@ -28,7 +28,6 @@ const Goals = () => {
       const decodedToken: { id: string } = jwtDecode(token);
       const userId = decodedToken.id;
   
-      console.log('Fetching goals for userId:', userId); // Adicionado para depuração
 
       const response = await axios.get(`${api}/goals/user/${userId}`, {
         headers: {
@@ -36,7 +35,7 @@ const Goals = () => {
         }
       });
 
-      console.log('Goals response:', response.data); // Adicionado para depuração
+     
 
       const loadedGoals = response.data.map((goal: Goal) => ({
         ...goal,
@@ -204,24 +203,23 @@ const Goals = () => {
     return totalTasks === 0 ? 0 : (completedTasks / totalTasks) * 100;
   };
 
-  const deleteGoal = async (goalId: number) => {
+  const deleteGoal = async (goalId: number): Promise<void> => {
     try {
-      const response = await axios.delete(`${api}/goals/${goalId}`);
-      console.log('Goal deleted successfully:', response.data);
+      await axios.delete(`${api}/goals/${goalId}`);
+      console.log('Goal deleted successfully');
+      // Atualiza a lista de metas após a exclusão
+      await fetchGoals();
     } catch (error) {
       if (axios.isAxiosError(error)) {
         console.error('Error deleting goal:', error.message);
         if (error.response) {
-          // O servidor respondeu com um código de status fora do intervalo 2xx
           console.error('Error data:', error.response.data);
           console.error('Error status:', error.response.status);
           console.error('Error headers:', error.response.headers);
         } else if (error.request) {
-          // A requisição foi feita, mas nenhuma resposta foi recebida
           console.error('No response received:', error.request);
         }
       } else {
-        // Algum outro erro ocorreu
         console.error('Unexpected error:', error);
       }
     }
@@ -359,20 +357,20 @@ const Goals = () => {
         </motion.div>
       </Modal>
 
-      <div className="flex flex-wrap justify-center gap-4 p-6">
-        {goals
-          .filter(goal => !goal.completed) // Filtrando metas não concluídas
-          .map((goal) => (
-          <motion.div
-            key={goal.id}
-            className="w-full md:w-1/2 lg:w-1/3 p-2"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            <GoalCard goal={goal} onClick={() => openModalGoal(goal)} />
-          </motion.div>
-        ))}
-      </div>
+            <div className="flex flex-wrap justify-center gap-4 p-6">
+              {goals
+                .filter(goal => !goal.completed) // Filtrando metas não concluídas
+                .map((goal) => (
+                <motion.div
+                  key={goal.id}
+                  className="w-full md:w-1/2 lg:w-1/3 p-2"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <GoalCard goal={goal} onClick={() => openModalGoal(goal)} />
+                </motion.div>
+              ))}
+            </div>
 
       <Modal
         isOpen={goalModalIsOpen}
@@ -487,16 +485,21 @@ const Goals = () => {
             </div>
             <div className="mt-6">
             <button
-                    onClick={() => {
-                      if (selectedGoal?.id) {
-                        deleteGoal(selectedGoal.id);
-                        console.log(selectedGoal.id)
-                      }
-                    }}
-                    className="px-4 py-2 bg-red-500 text-white font-semibold rounded-lg hover:bg-red-600 transition duration-300"
-                  >
-                    Deletar Meta
-                  </button>
+                onClick={() => {
+                  if (selectedGoal?.id) {
+                    const confirmDelete = window.confirm("Você realmente deseja deletar esta meta?");
+                    if (confirmDelete) {
+                      deleteGoal(selectedGoal.id).then(() => {
+                        closeModalGoal(); // Fechar o modal após deletar
+                      });
+                    }
+                  }
+                }}
+                className="px-4 py-2 bg-red-500 text-white font-semibold rounded-lg hover:bg-red-600 transition duration-300"
+              >
+                Deletar Meta
+              </button>
+
         </div>
           </motion.div>
         </motion.div>
