@@ -48,7 +48,7 @@ export default function Header() {
 
     const interval = setInterval(() => {
       fetchData();
-    }, 60000); // Fetch data every 60 seconds
+    }, 1000); // Fetch data every 60 seconds
 
     return () => clearInterval(interval); // Cleanup on unmount
   }, []);
