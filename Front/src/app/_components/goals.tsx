@@ -19,7 +19,7 @@ const Goals = () => {
   const [newGoalDescription, setNewGoalDescription] = useState('');
   const [newTaskName, setNewTaskName] = useState('');
   const [newTasks, setNewTasks] = useState<Task[]>([]);
-  const token = localStorage.getItem('token'); // Ajuste conforme o local onde o token é armazenado
+  const token = localStorage.getItem('token'); 
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>('success');
@@ -76,7 +76,7 @@ const Goals = () => {
     try {
       // O tipo do decodedToken pode ser ajustado conforme a estrutura do seu token
       const decodedToken: { id: string } = jwtDecode(token);
-      userId = decodedToken.id; // Ajuste conforme o nome do campo no token
+      userId = decodedToken.id; 
     } catch (error) {
       console.error('Erro ao decodificar o token:', error);
       return;
@@ -506,7 +506,7 @@ const Goals = () => {
                     const confirmDelete = window.confirm("Você realmente deseja deletar esta meta?");
                     if (confirmDelete) {
                       deleteGoal(selectedGoal.id).then(() => {
-                        closeModalGoal(); // Fechar o modal após deletar
+                        closeModalGoal();
                       });
                     }
                   }

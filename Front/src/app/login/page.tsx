@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from 'axios';
 
-const api = process.env.NEXT_PUBLIC_API_LINK; // Certifique-se de que essa variável está configurada corretamente
+const api = process.env.NEXT_PUBLIC_API_LINK; 
 
 const LoginPage = () => {
   const [username, setUsername] = useState("");
