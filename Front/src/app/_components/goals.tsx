@@ -8,6 +8,7 @@ import GoalCard from './goalCard';
 import { jwtDecode } from "jwt-decode";
 import { Goal, Task } from '../_types/types';
 const api = process.env.NEXT_PUBLIC_API_LINK;
+import { Snackbar, Alert } from '@mui/material';
 
 const Goals = () => {
   const [goals, setGoals] = useState<Goal[]>([]);
@@ -19,6 +20,9 @@ const Goals = () => {
   const [newTaskName, setNewTaskName] = useState('');
   const [newTasks, setNewTasks] = useState<Task[]>([]);
   const token = localStorage.getItem('token'); // Ajuste conforme o local onde o token é armazenado
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>('success');
 
   const fetchGoals = async () => {
     if (!token) return;
@@ -92,8 +96,14 @@ const Goals = () => {
     try {
       const response = await axios.post(`${api}/goals`, newGoal);
       await fetchGoals();
+      setSnackbarMessage('Meta criada com sucesso!');
+      setSnackbarSeverity('success');
+      setSnackbarOpen(true);
       closeModal();
     } catch (error) {
+      setSnackbarMessage('Erro ao criar meta.');
+      setSnackbarSeverity('error');
+      setSnackbarOpen(true);
       if (axios.isAxiosError(error)) {
         console.error("Axios error adding new goal:", error.message);
       } else {
@@ -206,10 +216,16 @@ const Goals = () => {
   const deleteGoal = async (goalId: number): Promise<void> => {
     try {
       await axios.delete(`${api}/goals/${goalId}`);
+      setSnackbarMessage('Meta deletada com sucesso!');
+      setSnackbarSeverity('success');
+      setSnackbarOpen(true);
       console.log('Goal deleted successfully');
       // Atualiza a lista de metas após a exclusão
       await fetchGoals();
     } catch (error) {
+      setSnackbarMessage('Erro ao deletar meta.');
+      setSnackbarSeverity('error');
+      setSnackbarOpen(true);
       if (axios.isAxiosError(error)) {
         console.error('Error deleting goal:', error.message);
         if (error.response) {
@@ -504,6 +520,16 @@ const Goals = () => {
           </motion.div>
         </motion.div>
       </Modal>
+
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={() => setSnackbarOpen(false)}
+      >
+        <Alert onClose={() => setSnackbarOpen(false)} severity={snackbarSeverity}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </div>
   );
 };
