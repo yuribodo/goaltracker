@@ -2,19 +2,28 @@
 
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import GoalCard from '../_components/goalCard'; // Certifique-se de ajustar o caminho do arquivo conforme necessário
+import GoalCard from '../_components/goalCard'; 
 import { Goal } from '../_types/types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import { jwtDecode } from "jwt-decode";
+const api = process.env.NEXT_PUBLIC_API_LINK;
 
 const GoalsList = () => {
   const [goalsState, setGoalsState] = useState<Goal[]>([]);
   const [loading, setLoading] = useState(true);
+  const token = localStorage.getItem('token'); // Ajuste conforme o local onde o token é armazenado
 
   useEffect(() => {
     const fetchGoals = async () => {
+      if (!token) return;
       try {
-        const response = await axios.get('http://localhost:8080/goals'); // Substitua pelo endpoint correto da sua API
+        const decodedToken: { id: string } = jwtDecode(token);
+        const userId = decodedToken.id;
+        const response = await axios.get(`${api}/goals/user/${userId}`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }}); 
         const data: Goal[] = response.data;
         const completedGoals = data.filter(goal => goal.completed);
         setGoalsState(completedGoals);
