@@ -1,4 +1,4 @@
-# My Full-Stack Template
+# Goal Tracker
 
 Welcome to **GoalTracker**, a powerful tool designed to help you set, track, and achieve your goals efficiently. Whether for personal, professional, or academic objectives, GoalTracker provides an intuitive interface and robust features to manage your goals effectively.
 
