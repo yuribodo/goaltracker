@@ -32,6 +32,10 @@ GoalTracker is perfect for individuals seeking an organized and visually appeali
 - **React**: A JavaScript library for building user interfaces. It allows us to create reusable UI components.
 - **TypeScript**: A superset of JavaScript, offering static type-checking and the latest ECMAScript features.
 - **TailwindCSS**: A utility-first CSS framework packed with classes like `flex`, `pt-4`, `text-center` and more to style your websites without leaving your HTML.
+- **Next.js**: A React framework for building server-rendered and static web applications.
+- **Axios**: A promise-based HTTP client for making requests to APIs.
+- **Framer Motion**: A library for adding animations to React components.
+- **jwt-decode**: A library for decoding JWTs (JSON Web Tokens) to extract information.
 
 ### Backend
 
@@ -40,6 +44,9 @@ GoalTracker is perfect for individuals seeking an organized and visually appeali
 - **TypeScript**: Brings static typing to JavaScript, ensuring a more predictable runtime behavior.
 - **PostgreSQL**: A powerful, open-source object-relational database system.
 - **Nodemon**: A utility that monitors for any changes in your source and automatically restarts your server.
+- **Prisma**: An open-source database toolkit that simplifies database access and management.
+- **bcryptjs**: A library for hashing passwords securely.
+
 
 ## Installation
 
