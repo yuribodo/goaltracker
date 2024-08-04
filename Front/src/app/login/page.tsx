@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from 'axios';
 
-const api = process.env.NEXT_PUBLIC_API_LINK; 
+const api = process.env.NEXT_PUBLIC_API_LINK;
 
 const LoginPage = () => {
   const [username, setUsername] = useState("");
@@ -16,7 +16,7 @@ const LoginPage = () => {
     try {
       const response = await axios.post(`${api}/auth/login`, { username, password });
       if (response.data.token) {
-        localStorage.setItem("token", response.data.token); // Armazene o token em vez de isLoggedIn
+        localStorage.setItem("token", response.data.token); // Armazena o token
         router.push("/home");
       } else {
         setError("Credenciais inválidas!");

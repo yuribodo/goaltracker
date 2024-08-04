@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import Loading from "./Loading";
 
 const AuthWrapper = ({ children }: { children: React.ReactNode }) => {
   const [loading, setLoading] = useState<boolean>(true);
@@ -30,7 +29,11 @@ const AuthWrapper = ({ children }: { children: React.ReactNode }) => {
   }, [loading, isAuthenticated, router]);
 
   if (loading) {
-    return <Loading/>; 
+    return <div>Loading...</div>; // Você pode substituir isso por um spinner ou outro componente de carregamento
+  }
+
+  if (!isAuthenticated) {
+    return null; // Não renderiza nada se não estiver autenticado
   }
 
   return <>{children}</>;
