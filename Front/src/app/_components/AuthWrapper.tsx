@@ -2,28 +2,35 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Loading from "./Loading";
 
 const AuthWrapper = ({ children }: { children: React.ReactNode }) => {
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const router = useRouter();
 
   useEffect(() => {
-    const checkLoginStatus = () => {
-      const loggedInStatus = localStorage.getItem("isLoggedIn");
-      setIsLoggedIn(loggedInStatus === "true");
+    const checkAuthStatus = () => {
+      const token = localStorage.getItem("token");
+      if (token) {
+        setIsAuthenticated(true);
+      } else {
+        setIsAuthenticated(false);
+      }
+      setLoading(false);
     };
 
-    checkLoginStatus();
+    checkAuthStatus();
   }, []);
 
   useEffect(() => {
-    if (isLoggedIn === false) {
+    if (!loading && !isAuthenticated) {
       router.replace("/login");
     }
-  }, [isLoggedIn, router]);
+  }, [loading, isAuthenticated, router]);
 
-  if (isLoggedIn === null) {
-    return <div>Loading...</div>;
+  if (loading) {
+    return <Loading/>; 
   }
 
   return <>{children}</>;
