@@ -19,6 +19,7 @@ With GoalTracker, you can:
 - [Installation](#installation)
 - [Running the Application](#running-the-application)
 - [Conclusion](#conclusion)
+- [Environment Variables](#environment-variables)
 
 ## Introduction
 
@@ -99,6 +100,27 @@ Before you start, ensure you have `node` and `npm` installed on your machine.
   This initializes the Express server, typically on `http://localhost:8080`.
 
 Ensure that the frontend and backend are configured to run on separate ports to avoid conflicts.
+
+## Environment Variables
+
+Both the frontend and backend applications require environment variables to be configured. Create the following .env files with the necessary settings:
+
+Frontend .env: Place this file in the Front directory.
+
+- **env**
+```bash
+   NEXT_PUBLIC_API_URL=http://localhost:8080
+  ```
+
+Backend .env: Place this file in the Back directory.
+
+- **env**
+ ```bash
+   DATABASE_URL={your postgress database}
+  ```
+
+
+Make sure to replace placeholders with your actual configuration values.
 
 ## Conclusion
 
