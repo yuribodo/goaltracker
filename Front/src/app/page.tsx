@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
+import Link from "next/link";
 import logo from '../../public/logo.png';
 
 export default function Page() {
@@ -9,7 +10,7 @@ export default function Page() {
         <div className="bg-gray-100">
             {/* Navbar */}
             <motion.div
-                className="flex items-center justify-between h-[10vh] px-4 bg-white shadow-xl border border-black "
+                className="flex items-center justify-between h-[10vh] px-4 bg-white shadow-xl border border-black"
                 initial={{ opacity: 0, y: -50 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
@@ -19,8 +20,12 @@ export default function Page() {
                     <span className="text-xl font-semibold">Goal Tracker</span>
                 </div>
                 <div className="flex items-center space-x-4">
-                    <button className="px-4 py-2 text-sm font-medium text-white bg-blue-500 rounded-full hover:bg-blue-600 transition duration-200" type="button">Log in</button>
-                    <button className="px-4 py-2 text-sm font-medium text-blue-500 border border-blue-500 rounded-full hover:bg-blue-50 transition duration-200" type="button">Sign up</button>
+                    <Link href="/login" className="px-4 py-2 text-sm font-medium text-white bg-blue-500 rounded-full hover:bg-blue-600 transition duration-200">
+                        Log in
+                    </Link>
+                    <Link href="/signup" className="px-4 py-2 text-sm font-medium text-blue-500 border border-blue-500 rounded-full hover:bg-blue-50 transition duration-200">
+                        Sign up
+                    </Link>
                 </div>
             </motion.div>
 
@@ -55,22 +60,24 @@ export default function Page() {
                     Organize e gerencie suas metas de maneira eficiente. Simplifique seu progresso e alcance seus objetivos com facilidade.
                 </motion.p>
                 <motion.p
-                    className="mt-4 text-2xl font-light text-gray-600 italic"
+                    className="mt-4 text-2xl font-semibold text-gray-600 italic"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.5, delay: 1.2 }}
                 >
                     Your goals, our mission
                 </motion.p>
-                <motion.button
-                    className="mt-8 px-8 py-3 bg-blue-500 text-white font-semibold text-lg rounded-full hover:bg-blue-600 transition duration-200 shadow-lg"
-                    initial={{ scale: 0.8 }}
-                    animate={{ scale: 1 }}
-                    transition={{ duration: 0.5, delay: 1.5 }}
-                    type="button"
-                >
-                    Get Started
-                </motion.button>
+                <Link href="/home">
+                    <motion.button
+                        className="mt-8 px-8 py-3 bg-blue-500 text-white font-semibold text-lg rounded-full hover:bg-blue-600 transition duration-200 shadow-lg"
+                        initial={{ scale: 0.8 }}
+                        animate={{ scale: 1 }}
+                        transition={{ duration: 0.5, delay: 1.5 }}
+                        type="button"
+                    >
+                        Get Started
+                    </motion.button>
+                </Link>
             </motion.div>
         </div>
     );
