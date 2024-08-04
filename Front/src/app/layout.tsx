@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   title: "Goal tracker",
   description: "Your goals, our mission",
   icons: {
-    icon: "/logo.png", // Caminho relativo ao ícone na pasta public
+    icon: "/logo.png", 
   },
 };
 
@@ -21,7 +21,6 @@ export default function RootLayout({
     <html lang="en">
       <head>
         <link rel="icon" href="/logo.png" type="image/x-icon" />
-        {/* Você pode adicionar mais links para ícones ou outras tags aqui */}
       </head>
       <body className={inter.className}>{children}</body>
     </html>

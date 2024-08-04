@@ -12,18 +12,22 @@ const api = process.env.NEXT_PUBLIC_API_LINK;
 const GoalsList = () => {
   const [goalsState, setGoalsState] = useState<Goal[]>([]);
   const [loading, setLoading] = useState(true);
-  const token = localStorage.getItem('token'); // Ajuste conforme o local onde o token é armazenado
+  const [token, setToken] = useState<string | null>(null); // Use state to store token
 
   useEffect(() => {
+    const storedToken = localStorage.getItem('token'); // Access localStorage inside useEffect
+    setToken(storedToken); // Update token state
+
     const fetchGoals = async () => {
-      if (!token) return;
+      if (!storedToken) return;
       try {
-        const decodedToken: { id: string } = jwtDecode(token);
+        const decodedToken: { id: string } = jwtDecode(storedToken);
         const userId = decodedToken.id;
         const response = await axios.get(`${api}/goals/user/${userId}`, {
           headers: {
-            'Authorization': `Bearer ${token}`
-          }}); 
+            'Authorization': `Bearer ${storedToken}`
+          }
+        }); 
         const data: Goal[] = response.data;
         const completedGoals = data.filter(goal => goal.completed);
         setGoalsState(completedGoals);
