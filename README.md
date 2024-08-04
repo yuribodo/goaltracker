@@ -107,14 +107,14 @@ Both the frontend and backend applications require environment variables to be c
 
 Frontend .env: Place this file in the Front directory.
 
-- **env**
+- **.env**
 ```bash
    NEXT_PUBLIC_API_URL=http://localhost:8080
   ```
 
 Backend .env: Place this file in the Back directory.
 
-- **env**
+- **.env**
  ```bash
    DATABASE_URL={your postgress database}
   ```
