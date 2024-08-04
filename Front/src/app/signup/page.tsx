@@ -20,7 +20,7 @@ const SignUpPage = () => {
       if (response.status === 201) {
         // Cadastro bem-sucedido, você pode definir o status de login aqui se necessário
         localStorage.setItem("isLoggedIn", "true"); // Isso pode ser removido ou ajustado conforme necessário
-        router.push("/");
+        router.push("/home");
       } else {
         // Adicione mais detalhes ao erro se possível
         setError("Falha ao criar a conta.");

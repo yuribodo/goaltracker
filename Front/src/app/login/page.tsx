@@ -17,7 +17,7 @@ const LoginPage = () => {
       const response = await axios.post(`${api}/auth/login`, { username, password });
       if (response.data.token) {
         localStorage.setItem("token", response.data.token); // Armazene o token em vez de isLoggedIn
-        router.push("/");
+        router.push("/home");
       } else {
         setError("Credenciais inválidas!");
       }
