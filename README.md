@@ -8,6 +8,8 @@ With GoalTracker, you can:
 - **Visualize Progress**: Use charts and progress bars to monitor your advancement in real-time.
 - **Customize**: Adjust settings and views according to your preferences for a personalized experience.
 
+  **You can start Usign right now at:** [Goal Tracker Link](https://goaltracker-xi.vercel.app/)
+
 ## Table of Contents
 
 - [Introduction](#introduction)
