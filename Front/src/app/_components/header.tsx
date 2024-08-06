@@ -45,13 +45,7 @@ export default function Header() {
 
   useEffect(() => {
     fetchData(); // Initial fetch
-
-    const interval = setInterval(() => {
-      fetchData();
-    }, 1000); // Fetch data every 60 seconds
-
-    return () => clearInterval(interval); // Cleanup on unmount
-  }, []);
+  }, [fetchData]);
 
   return (
     <div className="bg-gradient-to-r from-green-400 to-green-600 text-white min-h-[15vh] flex flex-col justify-between p-4 shadow-md">

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Modal from 'react-modal';
 import { motion } from 'framer-motion';
 import axios from 'axios';
@@ -24,37 +24,33 @@ const Goals = () => {
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>('success');
 
-  const fetchGoals = async () => {
-    if (!token) return;
-  
-    try {
-      // Decodifica o token para obter o userId
-      const decodedToken: { id: string } = jwtDecode(token);
-      const userId = decodedToken.id;
-  
-
-      const response = await axios.get(`${api}/goals/user/${userId}`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-
-     
-
-      const loadedGoals = response.data.map((goal: Goal) => ({
-        ...goal,
-        tasks: goal.tasks || []
-      }));
-      setGoals(loadedGoals);
-    } catch (error) {
-      console.error('Error fetching goals:', error);
-    }
-  };
-
+  const fetchGoals = useCallback(
+    async () => {
+      if (!token) return;
+    
+      try {
+        // Decodifica o token para obter o userId
+        const decodedToken: { id: string } = jwtDecode(token);
+        const userId = decodedToken.id;
+        const response = await axios.get(`${api}/goals/user/${userId}`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        const loadedGoals = response.data.map((goal: Goal) => ({
+          ...goal,
+          tasks: goal.tasks || []
+        }));
+        setGoals(loadedGoals);
+      } catch (error) {
+        console.error('Error fetching goals:', error);
+      }
+    },[]
+  ) 
   // Chama fetchGoals quando o componente é montado
   useEffect(() => {
     fetchGoals();
-  }, [token]);
+  }, []);
     
 
   const addNewGoal = async (event: React.FormEvent) => {
