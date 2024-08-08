@@ -4,35 +4,40 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from 'axios';
 
-const api = process.env.NEXT_PUBLIC_API_LINK || 'http://localhost:8080'; // Certifique-se de definir essa variável no .env
+const api = process.env.NEXT_PUBLIC_API_LINK || 'http://localhost:8080';
 
 const SignUpPage = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
   const handleSignUp = async () => {
+    setIsLoading(true);
     try {
-      const response = await axios.post(`${api}/users/`, { username, password, email });
-      
+      const response = await axios.post(
+        `${api}/users/`,
+        { username, password, email },
+        { timeout: 10000 } // Define o timeout para 10 segundos
+      );
+
       if (response.status === 201) {
-        // Cadastro bem-sucedido, você pode definir o status de login aqui se necessário
-        localStorage.setItem("isLoggedIn", "true"); // Isso pode ser removido ou ajustado conforme necessário
+        localStorage.setItem("isLoggedIn", "true");
         router.push("/home");
       } else {
-        // Adicione mais detalhes ao erro se possível
         setError("Falha ao criar a conta.");
       }
     } catch (error) {
-      // Verifique o tipo de erro para fornecer mensagens mais detalhadas
       if (axios.isAxiosError(error)) {
         setError(error.response?.data?.message || "Ocorreu um erro ao criar a conta.");
       } else {
         console.error("Error signing up:", error);
         setError("Ocorreu um erro ao criar a conta.");
       }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -66,8 +71,9 @@ const SignUpPage = () => {
           <button
             onClick={handleSignUp}
             className="w-full px-4 py-2 text-white bg-blue-600 rounded-md shadow-md hover:bg-blue-700 transition duration-300"
+            disabled={isLoading}
           >
-            Sign Up
+            {isLoading ? "Signing Up..." : "Sign Up"}
           </button>
           <p className="mt-4 text-center text-gray-600">
             Já tem uma conta? <a href="/login" className="text-blue-600 hover:underline">Faça login</a>
