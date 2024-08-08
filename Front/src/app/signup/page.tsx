@@ -16,7 +16,10 @@ const SignUpPage = () => {
 
   const handleSignUp = async () => {
     setIsLoading(true);
+    setError(null); // Reset error state
     try {
+      console.log("Starting signup process...");
+
       const response = await axios.post(
         `${api}/users/`,
         { username, password, email },
@@ -24,13 +27,28 @@ const SignUpPage = () => {
       );
 
       if (response.status === 201) {
-        localStorage.setItem("isLoggedIn", "true");
-        router.push("/home");
+        console.log("User created successfully, attempting login...");
+
+        const loginResponse = await axios.post(
+          `${api}/auth/login`,
+          { username, password }
+        );
+
+        if (loginResponse.data.token) {
+          console.log("Login successful, storing token and redirecting...");
+          localStorage.setItem("token", loginResponse.data.token);
+          router.push("/home");
+        } else {
+          console.log("Login response does not contain token.");
+          setError("Falha ao fazer login após o cadastro.");
+        }
       } else {
+        console.log("Failed to create user.");
         setError("Falha ao criar a conta.");
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {
+        console.log("Axios error:", error.response?.data?.message);
         setError(error.response?.data?.message || "Ocorreu um erro ao criar a conta.");
       } else {
         console.error("Error signing up:", error);
