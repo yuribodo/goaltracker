@@ -29,7 +29,7 @@ GoalTracker is perfect for individuals seeking an organized and visually appeali
 ![Screenshot 2024-08-07 204210](https://github.com/user-attachments/assets/958d15ad-9cff-460a-ba4c-4b092288b52e)
 
 ## Main Page
-![Screenshot 2024-08-07 204538](https://github.com/user-attachments/assets/9e01d395-8205-44c4-9b7d-2f63a1dfcc97)
+![Screenshot 2024-08-07 204641](https://github.com/user-attachments/assets/4fdd17dd-85ca-468b-8756-861b54bcde65)
 
 
 ## Technologies Used
