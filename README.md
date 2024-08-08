@@ -25,6 +25,12 @@ With GoalTracker, you can:
 
 GoalTracker is perfect for individuals seeking an organized and visually appealing way to manage their goals and tasks. Explore the platform and start turning your aspirations into tangible achievements!
 
+## Initial Page
+![Screenshot 2024-08-07 204210](https://github.com/user-attachments/assets/958d15ad-9cff-460a-ba4c-4b092288b52e)
+
+## Main Page
+![Screenshot 2024-08-07 204538](https://github.com/user-attachments/assets/9e01d395-8205-44c4-9b7d-2f63a1dfcc97)
+
 
 ## Technologies Used
 
