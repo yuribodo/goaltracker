@@ -6,7 +6,6 @@ With GoalTracker, you can:
 - **Set Goals**: Create clear and specific goals with detailed descriptions.
 - **Manage Tasks**: Add and track tasks related to each goal, with progress status.
 - **Visualize Progress**: Use charts and progress bars to monitor your advancement in real-time.
-- **Customize**: Adjust settings and views according to your preferences for a personalized experience.
 
   **You can start Usign right now at:** [Goal Tracker Link](https://goaltracker-xi.vercel.app/)
 
