@@ -3,18 +3,39 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from 'axios';
+import classNames from 'classnames';
 
 const api = process.env.NEXT_PUBLIC_API_LINK || 'http://localhost:8080';
 
 const SignUpPage = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [email, setEmail] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [passwordStrength, setPasswordStrength] = useState('');
   const router = useRouter();
 
+  const validatePassword = (password: string) => {
+    const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    if (password.length === 0) {
+      setPasswordStrength('');
+    } else if (strongPasswordRegex.test(password)) {
+      setPasswordStrength('strong');
+    } else if (password.length >= 6) {
+      setPasswordStrength('medium');
+    } else {
+      setPasswordStrength('weak');
+    }
+  };
+
   const handleSignUp = async () => {
+    if (password !== confirmPassword) {
+      setError('As senhas não correspondem. Tente novamente.');
+      return;
+    }
+
     setIsLoading(true);
     setError(null); // Reset error state
     try {
@@ -51,7 +72,6 @@ const SignUpPage = () => {
       if (axios.isAxiosError(error)) {
         const errorResponse = error.response?.data;
         const errorCode = errorResponse?.errorCode;
-        const errorMessage = errorResponse?.message;
 
         switch (errorCode) {
           case 'USERNAME_TAKEN':
@@ -101,9 +121,42 @@ const SignUpPage = () => {
             type="password"
             placeholder="Password"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e) => {
+              setPassword(e.target.value);
+              validatePassword(e.target.value);
+            }}
+            className={classNames(
+              "w-full px-4 py-2 mb-4 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300",
+              {
+                'border-red-500': passwordStrength === 'weak',
+                'border-yellow-500': passwordStrength === 'medium',
+                'border-green-500': passwordStrength === 'strong'
+              }
+            )}
+          />
+          <input
+            type="password"
+            placeholder="Confirm Password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
             className="w-full px-4 py-2 mb-6 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300"
           />
+          <div className="mb-4">
+            {passwordStrength && (
+              <p className={classNames(
+                "text-sm",
+                {
+                  'text-red-600': passwordStrength === 'weak',
+                  'text-yellow-600': passwordStrength === 'medium',
+                  'text-green-600': passwordStrength === 'strong'
+                }
+              )}>
+                {passwordStrength === 'weak' && 'Senha fraca. Use pelo menos 6 caracteres.'}
+                {passwordStrength === 'medium' && 'Senha média. Adicione caracteres especiais e maiúsculas para mais segurança.'}
+                {passwordStrength === 'strong' && 'Senha forte.'}
+              </p>
+            )}
+          </div>
           <button
             onClick={handleSignUp}
             className="w-full px-4 py-2 text-white bg-blue-600 rounded-md shadow-md hover:bg-blue-700 transition duration-300"
