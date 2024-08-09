@@ -8,6 +8,7 @@ import GoalCard from './goalCard';
 import { jwtDecode } from "jwt-decode";
 import { Goal, Task } from '../_types/types';
 const api = process.env.NEXT_PUBLIC_API_LINK;
+import { FaPencilAlt } from 'react-icons/fa'; // Ícone de lápis
 import { Snackbar, Alert } from '@mui/material';
 
 const Goals = () => {
@@ -17,12 +18,16 @@ const Goals = () => {
   const [selectedGoal, setSelectedGoal] = useState<Goal | null>(null);
   const [newGoalTitle, setNewGoalTitle] = useState('');
   const [newGoalDescription, setNewGoalDescription] = useState('');
+  const [isEditingTask, setIsEditingTask] = useState<number | null>(null);
   const [newTaskName, setNewTaskName] = useState('');
   const [newTasks, setNewTasks] = useState<Task[]>([]);
-  const token = localStorage.getItem('token'); 
+  const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>('success');
+  const [isEditingGoal, setIsEditingGoal] = useState(false);
+  const [goalData, setGoalData] = useState({ title: '', description: '' });
+  const [taskData, setTaskData] = useState('');
 
   const fetchGoals = useCallback(
     async () => {
@@ -194,7 +199,11 @@ const Goals = () => {
     setGoals(goals.map(goal => goal.id === updatedGoal.id ? updatedGoal : goal));
 
     try {
-      await axios.put(`${api}/goals/${updatedGoal.id}`, updatedGoal);
+      await axios.put(`${api}/goals/${updatedGoal.id}`, updatedGoal, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
     } catch (error) {
       console.error("Error updating task:", error);
     }
@@ -240,6 +249,53 @@ const Goals = () => {
   // Exemplo de uso na sua aplicação React
   const handleDelete = (goalId: number) => {
     deleteGoal(goalId);
+  };
+
+  const handleEditGoal = async () => {
+    if (selectedGoal) {
+      try {
+        await axios.put(`${api}/goals/${selectedGoal.id}`, goalData, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        await fetchGoals();
+        setIsEditingGoal(false);
+        closeModalGoal();
+      } catch (error) {
+        console.error("Error updating goal:", error);
+      }
+    }
+  };
+
+  const handleEditTask = async (taskId: number, updatedData: Partial<Task>) => {
+    if (selectedGoal) {
+      const updatedTasks = selectedGoal.tasks.map(task =>
+        task.id === taskId ? { ...task, ...updatedData } : task
+      );
+
+      const allTasksDone = updatedTasks.every(task => task.status === 'done');
+
+      const updatedGoal = {
+        ...selectedGoal,
+        tasks: updatedTasks,
+        completed: allTasksDone,
+        itemsCompleted: updatedTasks.filter(task => task.status === 'done').length,
+      };
+
+      setSelectedGoal(updatedGoal);
+
+      try {
+        await axios.put(`${api}/goals/${selectedGoal.id}`, updatedGoal, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        await fetchGoals();
+      } catch (error) {
+        console.error("Error updating task:", error);
+      }
+    }
   };
   
 
@@ -391,34 +447,51 @@ const Goals = () => {
       </div>
 
       <Modal
-        isOpen={goalModalIsOpen}
-        onRequestClose={closeModalGoal}
-        contentLabel="Detalhes da Meta"
-        className="modal"
-        overlayClassName="overlay"
+      isOpen={goalModalIsOpen}
+      onRequestClose={closeModalGoal}
+      contentLabel="Detalhes da Meta"
+      className="modal"
+      overlayClassName="overlay"
+    >
+      <motion.div
+        className="fixed inset-0 flex items-center justify-center z-50 bg-gray-900 bg-opacity-60"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.3 }}
       >
         <motion.div
-          className="fixed inset-0 flex items-center justify-center z-50 bg-gray-900 bg-opacity-60"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
+          className="bg-white rounded-lg p-6 max-w-lg w-full shadow-xl relative overflow-hidden transform-gpu"
+          initial={{ scale: 0.95, y: -20 }}
+          animate={{ scale: 1, y: 0 }}
+          exit={{ scale: 0.95, y: -20 }}
           transition={{ duration: 0.3 }}
         >
-          <motion.div
-            className="bg-white rounded-lg p-6 max-w-lg w-full shadow-xl relative overflow-hidden transform-gpu"
-            initial={{ scale: 0.95, y: -20 }}
-            animate={{ scale: 1, y: 0 }}
-            exit={{ scale: 0.95, y: -20 }}
-            transition={{ duration: 0.3 }}
+          <button
+            onClick={closeModalGoal}
+            className="absolute top-4 right-4 p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition duration-200"
+            aria-label="Fechar"
           >
-            <button
-              onClick={closeModalGoal}
-              className="absolute top-4 right-4 p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition duration-200"
-              aria-label="Fechar"
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-6 w-6 text-gray-700"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
             >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
+          <div className="flex items-center mb-6">
+            <div className="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center mr-4 shadow-md">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="h-6 w-6 text-gray-700"
+                className="h-8 w-8 text-white"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -427,101 +500,139 @@ const Goals = () => {
                   strokeLinecap="round"
                   strokeLinejoin="round"
                   strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
+                  d="M5 13l4 4L19 7"
                 />
               </svg>
-            </button>
-            <div className="flex items-center mb-6">
-              <div className="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center mr-4 shadow-md">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-8 w-8 text-white"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M5 13l4 4L19 7"
-                  />
-                </svg>
-              </div>
-              <div>
-                {selectedGoal && (
-                  <>
-                    <h2 className="text-xl font-bold mb-1">{selectedGoal.title}</h2>
-                    <p className="text-lg font-semibold">{selectedGoal.description}</p>
-                  </>
-                )}
-              </div>
             </div>
+            <div>
+              {selectedGoal && (
+                <>
+                  <h2 className="text-xl font-bold mb-1">
+                    {isEditingGoal ? (
+                      <input
+                        type="text"
+                        value={goalData.title}
+                        onChange={(e) => setGoalData({ ...goalData, title: e.target.value })}
+                        className="border rounded-md p-1"
+                      />
+                    ) : (
+                      selectedGoal.title
+                    )}
+                  </h2>
+                  <p className="text-lg font-semibold">
+                    {isEditingGoal ? (
+                      <textarea
+                        value={goalData.description}
+                        onChange={(e) => setGoalData({ ...goalData, description: e.target.value })}
+                        className="border rounded-md p-1 w-full"
+                      />
+                    ) : (
+                      selectedGoal.description
+                    )}
+                  </p>
+                  {isEditingGoal ? (
+                    <button onClick={handleEditGoal} className="text-blue-500 mt-2">Salvar</button>
+                  ) : (
+                    <button
+                      onClick={() => setIsEditingGoal(true)}
+                      className="text-blue-500 mt-2 flex items-center"
+                    >
+                      <FaPencilAlt className="mr-1" /> Editar Meta
+                    </button>
+                  )}
+                </>
+              )}
+            </div>
+          </div>
 
-            {selectedGoal && (
-              <div className="mb-6">
-                <h3 className="text-xl font-semibold text-gray-900 mb-3">Progresso</h3>
-                <div className="relative h-4 bg-gray-300 rounded-full">
-                  <motion.div
-                    className="absolute top-0 left-0 h-full bg-green-500 rounded-full"
-                    style={{ width: `${calculateProgress()}%` }}
-                    initial={{ width: 0 }}
-                    animate={{ width: `${calculateProgress()}%` }}
-                    transition={{ duration: 0.5 }}
-                  />
-                </div>
-                <p className="text-sm text-gray-800 mt-2">{calculateProgress().toFixed(0)}% concluído</p>
-              </div>
-            )}
-
+          {selectedGoal && (
             <div className="mb-6">
-              <h3 className="text-xl font-semibold text-gray-900 mb-3">Tarefas</h3>
-              <ul className="list-disc pl-5 space-y-2">
-                {selectedGoal?.tasks.map(task => (
-                  <li key={task.id} className="flex items-center text-gray-800">
-                    <input
-                      type="checkbox"
-                      checked={task.status === 'done'}
-                      onChange={() => toggleTaskStatus(task.id)}
-                      className={`mr-3 cursor-pointer ${task.status === 'done' ? 'bg-green-500' : 'bg-gray-300'} transition-colors rounded-md`}
-                    />
-                    <span className={`text-lg ${task.status === 'done' ? 'line-through text-gray-500' : 'text-gray-800'}`}>
-                      {task.name}
-                    </span>
-                  </li>
-                ))}
-              </ul>
+              <h3 className="text-xl font-semibold text-gray-900 mb-3">Progresso</h3>
+              <div className="relative h-4 bg-gray-300 rounded-full">
+                <motion.div
+                  className="absolute top-0 left-0 h-full bg-green-500 rounded-full"
+                  style={{ width: `${calculateProgress()}%` }}
+                  initial={{ width: 0 }}
+                  animate={{ width: `${calculateProgress()}%` }}
+                  transition={{ duration: 0.5 }}
+                />
+              </div>
+              <p className="text-sm text-gray-800 mt-2">{calculateProgress().toFixed(0)}% concluído</p>
             </div>
+          )}
 
-            <div className="flex justify-end mt-6">
-              <button
-                onClick={closeModalGoal}
-                className="bg-blue-500 text-white hover:bg-blue-600 p-3 rounded-lg text-lg transition duration-200"
-              >
-                Fechar
-              </button>
-            </div>
-            <div className="mt-6">
+          <div className="mb-6">
+            <h3 className="text-xl font-semibold text-gray-900 mb-3">Tarefas</h3>
+            <ul className="list-disc pl-5 space-y-2">
+              {selectedGoal?.tasks.map(task => (
+                <li key={task.id} className="flex items-center text-gray-800">
+                  <input
+                    type="checkbox"
+                    checked={task.status === 'done'}
+                    onChange={() => toggleTaskStatus(task.id)}
+                    className={`mr-3 cursor-pointer ${task.status === 'done' ? 'bg-green-500' : 'bg-gray-300'} transition-colors rounded-md`}
+                  />
+                  {isEditingTask === task.id ? (
+                    <>
+                      <input
+                        type="text"
+                        value={taskData}
+                        onChange={(e) => setTaskData(e.target.value)}
+                        className="border rounded-md p-1"
+                      />
+                      <button
+                        onClick={() => handleEditTask(task.id, { name: taskData })}
+                        className="text-blue-500 ml-2"
+                      >
+                        Salvar
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <span className={`text-lg ${task.status === 'done' ? 'line-through text-gray-500' : 'text-gray-800'}`}>
+                        {task.name}
+                      </span>
+                      <button
+                        onClick={() => { setTaskData(task.name); setIsEditingTask(task.id); }}
+                        className="ml-2 text-blue-500"
+                      >
+                        <FaPencilAlt />
+                      </button>
+                    </>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="flex justify-end mt-6">
             <button
-                onClick={() => {
-                  if (selectedGoal?.id) {
-                    const confirmDelete = window.confirm("Você realmente deseja deletar esta meta?");
-                    if (confirmDelete) {
-                      deleteGoal(selectedGoal.id).then(() => {
-                        closeModalGoal();
-                      });
-                    }
+              onClick={closeModalGoal}
+              className="bg-blue-500 text-white hover:bg-blue-600 p-3 rounded-lg text-lg transition duration-200"
+            >
+              Fechar
+            </button>
+          </div>
+          <div className="mt-6">
+            <button
+              onClick={() => {
+                if (selectedGoal?.id) {
+                  const confirmDelete = window.confirm("Você realmente deseja deletar esta meta?");
+                  if (confirmDelete) {
+                    deleteGoal(selectedGoal.id).then(() => {
+                      closeModalGoal();
+                    });
                   }
-                }}
-                className="px-4 py-2 bg-red-500 text-white font-semibold rounded-lg hover:bg-red-600 transition duration-300"
-              >
-                Deletar Meta
-              </button>
-
-        </div>
-          </motion.div>
+                }
+              }}
+              className="px-4 py-2 bg-red-500 text-white font-semibold rounded-lg hover:bg-red-600 transition duration-300"
+            >
+              Deletar Meta
+            </button>
+          </div>
         </motion.div>
-      </Modal>
+      </motion.div>
+    </Modal>
 
       <Snackbar
         open={snackbarOpen}
