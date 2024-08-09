@@ -40,19 +40,37 @@ const SignUpPage = () => {
           router.push("/home");
         } else {
           console.log("Login response does not contain token.");
-          setError("Falha ao fazer login após o cadastro.");
+          setError("Falha ao fazer login após o cadastro. Tente novamente.");
         }
       } else {
         console.log("Failed to create user.");
-        setError("Falha ao criar a conta.");
+        setError("Falha ao criar a conta. Tente novamente.");
       }
     } catch (error) {
+      console.error("Error in signup:", error);
       if (axios.isAxiosError(error)) {
-        console.log("Axios error:", error.response?.data?.message);
-        setError(error.response?.data?.message || "Ocorreu um erro ao criar a conta.");
+        const errorResponse = error.response?.data;
+        const errorCode = errorResponse?.errorCode;
+        const errorMessage = errorResponse?.message;
+
+        switch (errorCode) {
+          case 'USERNAME_TAKEN':
+            setError("O nome de usuário já está em uso. Por favor, escolha outro.");
+            break;
+          case 'EMAIL_TAKEN':
+            setError("O e-mail já está em uso. Tente outro.");
+            break;
+          case 'INTERNAL_ERROR':
+            setError("Ocorreu um erro ao criar a conta. Tente novamente mais tarde.");
+            break;
+          case 'UNKNOWN_ERROR':
+            setError("Ocorreu um erro desconhecido. Tente novamente.");
+            break;
+          default:
+            setError("Ocorreu um erro ao criar a conta. Tente novamente.");
+        }
       } else {
-        console.error("Error signing up:", error);
-        setError("Ocorreu um erro ao criar a conta.");
+        setError("Ocorreu um erro desconhecido. Tente novamente.");
       }
     } finally {
       setIsLoading(false);
