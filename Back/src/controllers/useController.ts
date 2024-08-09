@@ -41,8 +41,27 @@ export const createUser = async (req: Request, res: Response) => {
   const { username, email, password } = req.body;
 
   try {
+    // Verificar se o nome de usuário já existe
+    const existingUser = await prisma.user.findUnique({
+      where: { username }
+    });
+
+    if (existingUser) {
+      return res.status(400).json({ errorCode: 'USERNAME_TAKEN', message: 'Nome de usuário já está em uso. Por favor, escolha outro.' });
+    }
+
+    // Verificar se o e-mail já está em uso
+    const existingEmail = await prisma.user.findUnique({
+      where: { email }
+    });
+
+    if (existingEmail) {
+      return res.status(400).json({ errorCode: 'EMAIL_TAKEN', message: 'Este e-mail já está em uso. Tente outro.' });
+    }
+
     // Hash da senha antes de armazenar
     const hashedPassword = await bcrypt.hash(password, 10);
+
     const user = await prisma.user.create({
       data: {
         email,
@@ -50,12 +69,14 @@ export const createUser = async (req: Request, res: Response) => {
         password: hashedPassword,
       }
     });
+
     res.status(201).json(user);
   } catch (error: unknown) {
+    console.error('Error in createUser:', error);
     if (error instanceof Error) {
-      res.status(500).json({ error: error.message });
+      res.status(500).json({ errorCode: 'INTERNAL_ERROR', message: 'Ocorreu um erro ao criar a conta. Tente novamente mais tarde.' });
     } else {
-      res.status(500).json({ error: 'Unknown error occurred' });
+      res.status(500).json({ errorCode: 'UNKNOWN_ERROR', message: 'Ocorreu um erro desconhecido.' });
     }
   }
 };
