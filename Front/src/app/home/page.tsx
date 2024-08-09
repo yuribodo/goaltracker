@@ -1,6 +1,6 @@
 import Link from "next/link";
-import Header from "../_components/header";
-import Goals from "../_components/goals";
+import Header from "./header";
+import Goals from "./goals";
 import AuthWrapper from "../_components/AuthWrapper";
 
 export default function Home() {
